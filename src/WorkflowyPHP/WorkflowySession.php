@@ -10,65 +10,92 @@ class WorkflowySession
 
     /**
      * Tries to start a new session by using the given session ID
-     * @todo check if session is valid
      * @param string $session_id
      */
     public function __construct($session_id)
     {
         $this->sessionID = $session_id;
+        $this->initMostRecentTransactionID();
     }
 
     public function getTree()
     {
-
+        // @todo
     }
 
     public function moveBullet($id, $parent_id, $priority)
     {
-
+        // @todo
     }
 
     public function createBullet($name, $description, $parent_id, $priority)
     {
-
+        // @todo
     }
 
     public function completeBullet($id)
     {
-
+        // @todo
     }
 
     public function deleteBullet()
     {
-
+        // @todo
     }
 
     public function editBullet($id, $name, $description)
     {
+        // @todo
+    }
+
+    /**
+     * Gets the most recent transaction ID
+     * That identifier is needed for each request
+     */
+    private function initMostRecentTransactionID()
+    {
+        $data = $this->request('get_initialization_data');
+        if (!empty($data['projectTreeData']['mainProjectTreeInfo']['initialMostRecentOperationTransactionId']))
+        {
+            $this->mostRecentOperationTransactionId = $data['projectTreeData']['mainProjectTreeInfo']['initialMostRecentOperationTransactionId'];
+        }
+        else
+        {
+            throw new WorkflowyError('Could not initialise session.');
+        }
 
     }
 
+    /**
+     * Gets the account informations
+     * @return array
+     */
     public function getAccount()
     {
-        $data = $this->request('get_initialization_data');
-
+        $data     = $this->request('get_initialization_data');
         $settings = array(
-            'username'                   => !empty($data['settings']['username']) ? $data['settings']['username'] : false,
-            'theme'                      => !empty($data['settings']['theme']) ? $data['settings']['theme'] : false,
-            'email'                      => !empty($data['settings']['email']) ? $data['settings']['email'] : false,
-            'items_created_in_month'     => '@todo', //itemsCreatedInCurrentMonth
-            'monthly_quota'              => '@todo', //monthlyItemQuota
-            'registration_date'          => '@todo', //dateJoinedTimestampInSeconds
-            'most_recent_transaction_id' => '@todo' //$data['projectTreeData']['mainProjectTreeInfo']['initialMostRecentOperationTransactionId']
+            'username'               => !empty($data['settings']['username']) ? $data['settings']['username'] : false,
+            'theme'                  => !empty($data['settings']['theme']) ? $data['settings']['theme'] : false,
+            'email'                  => !empty($data['settings']['email']) ? $data['settings']['email'] : false,
+            'items_created_in_month' => !empty($data['projectTreeData']['mainProjectTreeInfo']['itemsCreatedInCurrentMonth']) ? intval($data['projectTreeData']['mainProjectTreeInfo']['itemsCreatedInCurrentMonth']) : false,
+            'monthly_quota'          => !empty($data['projectTreeData']['mainProjectTreeInfo']['monthlyItemQuota']) ? intval($data['projectTreeData']['mainProjectTreeInfo']['monthlyItemQuota']) : false,
+            'registration_date'      => !empty($data['projectTreeData']['mainProjectTreeInfo']['dateJoinedTimestampInSeconds']) ? date('Y-m-d H:i:s', intval($data['projectTreeData']['mainProjectTreeInfo']['dateJoinedTimestampInSeconds'])) : false,
         );
         return $settings;
     }
 
     public function getExpandedBullets()
     {
+        // @todo
         // get currently expanded projects (serverExpandedProjectsList) (and toggle expand ? how ?)
     }
 
+    /**
+     * Performs an API request
+     * @param string $method
+     * @param array  $params
+     * @return array
+     */
     private function request($method, $params = array())
     {
         $ch = curl_init();
@@ -86,11 +113,7 @@ class WorkflowySession
         {
             $this->mostRecentOperationTransactionId = $data['results'][0]['new_most_recent_operation_transaction_id'];
         }
-        if (!empty($init_data['projectTreeData']['mainProjectTreeInfo']['initialMostRecentOperationTransactionId']))
-        {
-            $this->mostRecentOperationTransactionId = $data['projectTreeData']['mainProjectTreeInfo']['initialMostRecentOperationTransactionId'];
-        }
-        return $data;
+        return is_array($data) ? $data : array();
     }
 
 }
