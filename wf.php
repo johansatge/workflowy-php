@@ -1,22 +1,16 @@
 <meta charset="utf-8">
 <?php
 
-/**
- * API @todo
- * - login
- * - get tree (complete ? partials ?)
- * - move item
- * - complete item
- * - delete item
- * - edit item name
- * - add note
- * - get settings (username, itemsCreatedInCurrentMonth, monthlyItemQuota, dateJoinedTimestampInSeconds)
- * - get currently expanded projects (serverExpandedProjectsList) (and toggle expand ? how ?)
- */
+require 'src/WorkflowyPHP/Workflowy.php';
 
-$session_id = login('workflowy1@yopmail.com', 'workflowy1');
+use WorkflowyPHP\Workflowy;
+
+$workflowy = new Workflowy();
+$session_id = $workflowy->login('workflowy1@yopmail.com', 'workflowy1');
 printr($session_id);
 
+
+/*
 $init_data = request('get_initialization_data');
 $most_recent_operation_transaction_id = $init_data['projectTreeData']['mainProjectTreeInfo']['initialMostRecentOperationTransactionId'];
 $client_id = $init_data['projectTreeData']['clientId'];
@@ -98,34 +92,7 @@ function request($method, $params = array())
         $GLOBALS['most_recent_operation_transaction_id'] = $data['results'][0]['new_most_recent_operation_transaction_id'];
     }
     return $data;
-}
-
-function login($username, $password)
-{
-    $raw_data = do_curl('https://workflowy.com/accounts/login/', array('username' => $username, 'password' => $password, 'next' => ''), array(CURLOPT_HEADER => true));
-    preg_match('#^Set-Cookie:\s*sessionid=([^;]*)#mi', $raw_data, $session_id_match);
-    $session_id = !empty($session_id_match[1]) ? $session_id_match[1] : false;
-
-    return preg_match('#^Location:#mi', $raw_data) ? $session_id : false;
-}
-
-function do_curl($url, $post_fields, $curl_options)
-{
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-    foreach ($curl_options as $option => $value)
-    {
-        curl_setopt($ch, $option, $value);
-    }
-    $raw_data = curl_exec($ch);
-    curl_close($ch);
-    return $raw_data;
-}
+}*/
 
 function printr($thing)
 {
