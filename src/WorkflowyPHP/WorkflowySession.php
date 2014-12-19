@@ -1,11 +1,13 @@
 <?php namespace WorkflowyPHP;
 
+use WorkflowyPHP\Workflowy;
+use WorkflowyPHP\WorkflowyBullet;
 use WorkflowyPHP\WorkflowyError;
 
 class WorkflowySession
 {
 
-    private $sessionID = '';
+    private $sessionID;
     private $mostRecentOperationTransactionId;
 
     /**
@@ -20,7 +22,31 @@ class WorkflowySession
 
     public function getTree()
     {
-        // @todo
+        $data        = $this->request('get_initialization_data');
+        $raw_bullets = !empty($data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren']) ? $data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren'] : array();
+        $bullets     = array();
+        foreach ($raw_bullets as $raw_bullet)
+        {
+            $bullets[] = $this->parseBullet($raw_bullet);
+        }
+        return $bullets;
+    }
+
+    private function parseBullet($raw_bullet)
+    {
+        $name        = !empty($raw_bullet['nm']) ? $raw_bullet['nm'] : '';
+        $description = !empty($raw_bullet['no']) ? $raw_bullet['no'] : '';
+        $id          = !empty($raw_bullet['id']) ? $raw_bullet['id'] : '';
+        $children    = array();
+        if (!empty($raw_bullet['ch']))
+        {
+            foreach ($raw_bullet['ch'] as $sub_raw_bullet)
+            {
+                $children[] = $this->parseBullet($sub_raw_bullet);
+            }
+        }
+        $bullet = new WorkflowyBullet($id, $name, $description, $children);
+        return $bullet;
     }
 
     public function moveBullet($id, $parent_id, $priority)
@@ -68,6 +94,7 @@ class WorkflowySession
 
     /**
      * Gets the account informations
+     * @todo refactor this
      * @return array
      */
     public function getAccount()
@@ -93,13 +120,13 @@ class WorkflowySession
     /**
      * Performs an API request
      * @param string $method
-     * @param array  $params
+     * @param array $params
      * @return array
      */
     private function request($method, $params = array())
     {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, 'https://workflowy.com/' . $method);
+        curl_setopt($ch, CURLOPT_URL, sprintf(Workflowy::API_URL, $method));
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_POST, true);

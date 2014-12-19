@@ -1,14 +1,21 @@
 <meta charset="utf-8">
 <?php
 
-require 'src/WorkflowyPHP/Workflowy.php';
+require 'src/autoload.php';
 
-use WorkflowyPHP\Workflowy;
+use WorkflowyPHP\WorkflowyLogin;
+use WorkflowyPHP\WorkflowySession;
 
-$workflowy = new Workflowy();
-$session_id = $workflowy->login('workflowy1@yopmail.com', 'workflowy1');
+$login = new WorkflowyLogin();
+$session_id = !empty($_GET['sessionid']) ? $_GET['sessionid'] : $login->login('workflowy1@yopmail.com', 'workflowy1');
+
 printr($session_id);
 
+$session = new WorkflowySession($session_id);
+
+//printr($session->getAccount());
+
+printr($session->getTree());
 
 /*
 $init_data = request('get_initialization_data');
@@ -82,17 +89,7 @@ function generate_id()
         return substr(base_convert((1 + ((float)rand() / (float)getrandmax())) * 65536 | 0, 10, 16), 1);
     }, 'rr-r-r-r-rrr');
 }
-
-function request($method, $params = array())
-{
-    $raw_data = do_curl('https://workflowy.com/' . $method, $params, array(CURLOPT_HTTPHEADER => array('Cookie: sessionid=' . $GLOBALS['session_id'])));
-    $data     = json_decode($raw_data, true);
-    if (!empty($data['results'][0]['new_most_recent_operation_transaction_id']))
-    {
-        $GLOBALS['most_recent_operation_transaction_id'] = $data['results'][0]['new_most_recent_operation_transaction_id'];
-    }
-    return $data;
-}*/
+*/
 
 function printr($thing)
 {
