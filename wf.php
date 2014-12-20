@@ -1,7 +1,16 @@
 <meta charset="utf-8">
 <?php
 
-require 'src/autoload.php';
+date_default_timezone_set('Europe/Paris');
+
+// for now, static (@todo autoloader)
+require_once 'src/WorkflowyPHP/Workflowy.php';
+require_once 'src/WorkflowyPHP/WorkflowyLogin.php';
+require_once 'src/WorkflowyPHP/WorkflowySession.php';
+require_once 'src/WorkflowyPHP/WorkflowyBullet.php';
+require_once 'src/WorkflowyPHP/WorkflowyError.php';
+
+require_once 'vendor/autoload.php';
 
 use WorkflowyPHP\WorkflowyLogin;
 use WorkflowyPHP\WorkflowySession;
@@ -9,13 +18,13 @@ use WorkflowyPHP\WorkflowySession;
 $login = new WorkflowyLogin();
 $session_id = !empty($_GET['sessionid']) ? $_GET['sessionid'] : $login->login('workflowy1@yopmail.com', 'workflowy1');
 
-printr($session_id);
+s($session_id);
 
 $session = new WorkflowySession($session_id);
 
 //printr($session->getAccount());
 
-printr($session->getTree());
+s($session->getTree());
 
 /*
 $init_data = request('get_initialization_data');

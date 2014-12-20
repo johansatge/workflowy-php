@@ -1,0 +1,16 @@
+{
+    "name": "johansatge/workflowy-php",
+    "description": "An unofficial Workflowy PHP API",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Johan Satgé",
+            "email": "contact@johansatge.fr"
+        }
+    ],
+    "require": {
+    },
+    "require-dev": {
+        "raveren/kint": "0.9"
+    }
+}

@@ -20,6 +20,11 @@ class WorkflowySession
         $this->initMostRecentTransactionID();
     }
 
+    /**
+     * Gets the global tree
+     * Returns an array of WorkflowyBullet objects
+     * @return array
+     */
     public function getTree()
     {
         $data        = $this->request('get_initialization_data');
@@ -34,9 +39,10 @@ class WorkflowySession
 
     private function parseBullet($raw_bullet)
     {
+        $id          = !empty($raw_bullet['id']) ? $raw_bullet['id'] : '';
         $name        = !empty($raw_bullet['nm']) ? $raw_bullet['nm'] : '';
         $description = !empty($raw_bullet['no']) ? $raw_bullet['no'] : '';
-        $id          = !empty($raw_bullet['id']) ? $raw_bullet['id'] : '';
+        $complete    = !empty($raw_bullet['cp']);
         $children    = array();
         if (!empty($raw_bullet['ch']))
         {
@@ -45,8 +51,13 @@ class WorkflowySession
                 $children[] = $this->parseBullet($sub_raw_bullet);
             }
         }
-        $bullet = new WorkflowyBullet($id, $name, $description, $children);
+        $bullet = new WorkflowyBullet($id, $name, $description, $complete, $children);
         return $bullet;
+    }
+
+    public function getOPML($id)
+    {
+        // @todo - allow to export only one part of the tree
     }
 
     public function moveBullet($id, $parent_id, $priority)
@@ -64,7 +75,7 @@ class WorkflowySession
         // @todo
     }
 
-    public function deleteBullet()
+    public function deleteBullet($id)
     {
         // @todo
     }
@@ -120,7 +131,7 @@ class WorkflowySession
     /**
      * Performs an API request
      * @param string $method
-     * @param array $params
+     * @param array  $params
      * @return array
      */
     private function request($method, $params = array())
