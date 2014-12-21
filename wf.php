@@ -5,26 +5,24 @@ date_default_timezone_set('Europe/Paris');
 
 // for now, static (@todo autoloader)
 require_once 'src/WorkflowyPHP/Workflowy.php';
-require_once 'src/WorkflowyPHP/WorkflowyLogin.php';
 require_once 'src/WorkflowyPHP/WorkflowySession.php';
-require_once 'src/WorkflowyPHP/WorkflowyBullet.php';
+require_once 'src/WorkflowyPHP/WorkflowyList.php';
 require_once 'src/WorkflowyPHP/WorkflowyError.php';
 
 require_once 'vendor/autoload.php';
 
-use WorkflowyPHP\WorkflowyLogin;
+use WorkflowyPHP\Workflowy;
 use WorkflowyPHP\WorkflowySession;
 
-$login = new WorkflowyLogin();
-$session_id = !empty($_GET['sessionid']) ? $_GET['sessionid'] : $login->login('workflowy1@yopmail.com', 'workflowy1');
-
+$session_id = !empty($_GET['sessionid']) ? $_GET['sessionid'] : Workflowy::login('workflowy1@yopmail.com', 'workflowy1');
 s($session_id);
 
 $session = new WorkflowySession($session_id);
 
-//printr($session->getAccount());
 
-s($session->getTree());
+$list = $session->getList();
+s($list->searchByName('test10'));
+
 
 /*
 $init_data = request('get_initialization_data');

@@ -1,8 +1,6 @@
 <?php namespace WorkflowyPHP;
 
-use WorkflowyPHP\Workflowy;
-use WorkflowyPHP\WorkflowyBullet;
-use WorkflowyPHP\WorkflowyError;
+use WorkflowyPHP\WorkflowyList;
 
 class WorkflowySession
 {
@@ -21,68 +19,61 @@ class WorkflowySession
     }
 
     /**
-     * Gets the global tree
-     * Returns an array of WorkflowyBullet objects
-     * @return array
+     * Gets the global list
+     * @return WorkflowyList
      */
-    public function getTree()
+    public function getList()
     {
-        $data        = $this->request('get_initialization_data');
-        $raw_bullets = !empty($data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren']) ? $data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren'] : array();
-        $bullets     = array();
-        foreach ($raw_bullets as $raw_bullet)
+        $data      = $this->request('get_initialization_data');
+        $raw_lists = !empty($data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren']) ? $data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren'] : array();
+        $lists     = array();
+        foreach ($raw_lists as $raw_list)
         {
-            $bullets[] = $this->parseBullet($raw_bullet);
+            $lists[] = $this->parseList($raw_list);
         }
-        return $bullets;
+        return new WorkflowyList('None', null, null, null, $lists);
     }
 
-    private function parseBullet($raw_bullet)
+    private function parseList($raw_list)
     {
-        $id          = !empty($raw_bullet['id']) ? $raw_bullet['id'] : '';
-        $name        = !empty($raw_bullet['nm']) ? $raw_bullet['nm'] : '';
-        $description = !empty($raw_bullet['no']) ? $raw_bullet['no'] : '';
-        $complete    = !empty($raw_bullet['cp']);
-        $children    = array();
-        if (!empty($raw_bullet['ch']))
+        $id          = !empty($raw_list['id']) ? $raw_list['id'] : '';
+        $name        = !empty($raw_list['nm']) ? $raw_list['nm'] : '';
+        $description = !empty($raw_list['no']) ? $raw_list['no'] : '';
+        $complete    = !empty($raw_list['cp']);
+        $sublists    = array();
+        if (!empty($raw_list['ch']) && is_array($raw_list['ch']))
         {
-            foreach ($raw_bullet['ch'] as $sub_raw_bullet)
+            foreach ($raw_list['ch'] as $raw_sublist)
             {
-                $children[] = $this->parseBullet($sub_raw_bullet);
+                $sublists[] = $this->parseList($raw_sublist);
             }
         }
-        $bullet = new WorkflowyBullet($id, $name, $description, $complete, $children);
-        return $bullet;
+        return new WorkflowyList($id, $name, $description, $complete, $sublists);
     }
 
-    public function getOPML($id)
+    /**
+     * Gets the account informations
+     * @todo refactor this function ?
+     * @return array
+     */
+    public function getAccount()
     {
-        // @todo - allow to export only one part of the tree
+        $data     = $this->request('get_initialization_data');
+        $settings = array(
+            'username'               => !empty($data['settings']['username']) ? $data['settings']['username'] : false,
+            'theme'                  => !empty($data['settings']['theme']) ? $data['settings']['theme'] : false,
+            'email'                  => !empty($data['settings']['email']) ? $data['settings']['email'] : false,
+            'items_created_in_month' => !empty($data['projectTreeData']['mainProjectTreeInfo']['itemsCreatedInCurrentMonth']) ? intval($data['projectTreeData']['mainProjectTreeInfo']['itemsCreatedInCurrentMonth']) : false,
+            'monthly_quota'          => !empty($data['projectTreeData']['mainProjectTreeInfo']['monthlyItemQuota']) ? intval($data['projectTreeData']['mainProjectTreeInfo']['monthlyItemQuota']) : false,
+            'registration_date'      => !empty($data['projectTreeData']['mainProjectTreeInfo']['dateJoinedTimestampInSeconds']) ? date('Y-m-d H:i:s', intval($data['projectTreeData']['mainProjectTreeInfo']['dateJoinedTimestampInSeconds'])) : false,
+        );
+        return $settings;
     }
 
-    public function moveBullet($id, $parent_id, $priority)
-    {
-        // @todo
-    }
-
-    public function createBullet($name, $description, $parent_id, $priority)
-    {
-        // @todo
-    }
-
-    public function completeBullet($id)
-    {
-        // @todo
-    }
-
-    public function deleteBullet($id)
+    public function getExpandedLists()
     {
         // @todo
-    }
-
-    public function editBullet($id, $name, $description)
-    {
-        // @todo
+        // get currently expanded projects (serverExpandedProjectsList) (and toggle expand ? how ?)
     }
 
     /**
@@ -101,31 +92,6 @@ class WorkflowySession
             throw new WorkflowyError('Could not initialise session.');
         }
 
-    }
-
-    /**
-     * Gets the account informations
-     * @todo refactor this
-     * @return array
-     */
-    public function getAccount()
-    {
-        $data     = $this->request('get_initialization_data');
-        $settings = array(
-            'username'               => !empty($data['settings']['username']) ? $data['settings']['username'] : false,
-            'theme'                  => !empty($data['settings']['theme']) ? $data['settings']['theme'] : false,
-            'email'                  => !empty($data['settings']['email']) ? $data['settings']['email'] : false,
-            'items_created_in_month' => !empty($data['projectTreeData']['mainProjectTreeInfo']['itemsCreatedInCurrentMonth']) ? intval($data['projectTreeData']['mainProjectTreeInfo']['itemsCreatedInCurrentMonth']) : false,
-            'monthly_quota'          => !empty($data['projectTreeData']['mainProjectTreeInfo']['monthlyItemQuota']) ? intval($data['projectTreeData']['mainProjectTreeInfo']['monthlyItemQuota']) : false,
-            'registration_date'      => !empty($data['projectTreeData']['mainProjectTreeInfo']['dateJoinedTimestampInSeconds']) ? date('Y-m-d H:i:s', intval($data['projectTreeData']['mainProjectTreeInfo']['dateJoinedTimestampInSeconds'])) : false,
-        );
-        return $settings;
-    }
-
-    public function getExpandedBullets()
-    {
-        // @todo
-        // get currently expanded projects (serverExpandedProjectsList) (and toggle expand ? how ?)
     }
 
     /**
