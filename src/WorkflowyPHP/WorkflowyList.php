@@ -7,7 +7,8 @@ class WorkflowyList
     private $name;
     private $complete;
     private $description;
-    private $children;
+    private $sublists;
+
     private $session;
 
     /**
@@ -16,17 +17,16 @@ class WorkflowyList
      * @param string           $name
      * @param string           $description
      * @param bool             $complete
-     * @param array            $children
+     * @param array            $sublists
      * @param WorkflowySession $session
-     * @internal param array $children
      */
-    public function __construct($id, $name, $description, $complete, $children, $session)
+    public function __construct($id, $name, $description, $complete, $sublists, $session)
     {
         $this->id          = $id;
         $this->name        = $name;
         $this->description = $description;
         $this->complete    = $complete;
-        $this->children    = $children;
+        $this->sublists    = $sublists;
         $this->session     = $session;
     }
 
@@ -67,7 +67,7 @@ class WorkflowyList
         return $this->search('/^' . preg_quote($id, '/') . '$/', 'id');
     }
 
-    public function create($name, $description, $priority)
+    public function createList($name, $description, $priority)
     {
         // @todo
         /*
@@ -115,7 +115,7 @@ class WorkflowyList
         ));
     }
 
-    public function delete()
+    public function deleteList()
     {
         // @todo
     }
@@ -164,7 +164,7 @@ class WorkflowyList
         {
             return $this;
         }
-        foreach ($this->children as $child)
+        foreach ($this->sublists as $child)
         {
             $match = $child->search($regexp, $field);
             if ($match !== false)

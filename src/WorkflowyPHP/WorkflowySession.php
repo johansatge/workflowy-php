@@ -1,6 +1,7 @@
 <?php namespace WorkflowyPHP;
 
 use WorkflowyPHP\WorkflowyList;
+use WorkflowyPHP\WorkflowyError;
 
 class WorkflowySession
 {
@@ -12,11 +13,21 @@ class WorkflowySession
     /**
      * Tries to start a new session by using the given session ID
      * @param string $session_id
+     * @throws WorkflowyError
      */
     public function __construct($session_id)
     {
         $this->sessionID = $session_id;
-        $this->init();
+        $data            = $this->request('get_initialization_data');
+        if (!empty($data['projectTreeData']['mainProjectTreeInfo']['initialMostRecentOperationTransactionId']))
+        {
+            $this->mostRecentOperationTransactionId = $data['projectTreeData']['mainProjectTreeInfo']['initialMostRecentOperationTransactionId'];
+            $this->clientID                         = $data['projectTreeData']['clientId'];
+        }
+        else
+        {
+            throw new WorkflowyError('Could not initialize session.');
+        }
     }
 
     /**
@@ -27,12 +38,7 @@ class WorkflowySession
     {
         $data      = $this->request('get_initialization_data');
         $raw_lists = !empty($data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren']) ? $data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren'] : array();
-        $lists     = array();
-        foreach ($raw_lists as $raw_list)
-        {
-            $lists[] = $this->parseList($raw_list);
-        }
-        return new WorkflowyList('None', null, null, false, $lists, $this);
+        return $this->parseList(array('id' => 'None', 'nm' => null, 'no' => null, 'cp' => false, 'ch' => $raw_lists));
     }
 
     /**
@@ -42,17 +48,15 @@ class WorkflowySession
      */
     private function parseList($raw_list)
     {
-        $id          = !empty($raw_list['id']) ? $raw_list['id'] : '';
-        $name        = !empty($raw_list['nm']) ? $raw_list['nm'] : '';
-        $description = !empty($raw_list['no']) ? $raw_list['no'] : '';
-        $complete    = !empty($raw_list['cp']);
-        $sublists    = array();
-        if (!empty($raw_list['ch']) && is_array($raw_list['ch']))
+        $id           = !empty($raw_list['id']) ? $raw_list['id'] : '';
+        $name         = !empty($raw_list['nm']) ? $raw_list['nm'] : '';
+        $description  = !empty($raw_list['no']) ? $raw_list['no'] : '';
+        $complete     = !empty($raw_list['cp']);
+        $raw_sublists = !empty($raw_list['ch']) && is_array($raw_list['ch']) ? $raw_list['ch'] : array();
+        $sublists     = array();
+        foreach ($raw_sublists as $raw_sublist)
         {
-            foreach ($raw_list['ch'] as $raw_sublist)
-            {
-                $sublists[] = $this->parseList($raw_sublist);
-            }
+            $sublists[] = $this->parseList($raw_sublist);
         }
         return new WorkflowyList($id, $name, $description, $complete, $sublists, $this);
     }
@@ -76,32 +80,9 @@ class WorkflowySession
         return $settings;
     }
 
-    public function getExpandedLists()
-    {
-        // @todo
-        // get currently expanded projects (serverExpandedProjectsList) (and toggle expand ? how ?)
-    }
-
-    /**
-     * Tries to get the init data
-     */
-    private function init()
-    {
-        $data = $this->request('get_initialization_data');
-        if (!empty($data['projectTreeData']['mainProjectTreeInfo']['initialMostRecentOperationTransactionId']))
-        {
-            $this->mostRecentOperationTransactionId = $data['projectTreeData']['mainProjectTreeInfo']['initialMostRecentOperationTransactionId'];
-            $this->clientID                         = $data['projectTreeData']['clientId'];
-        }
-        else
-        {
-            throw new WorkflowyError('Could not initialise session.');
-        }
-    }
-
     /**
      * Performs a list request
-     * May be called from a WorkflowyList object
+     * Called from a WorkflowyList object
      * @param string $action
      * @param array  $data
      * @return array
