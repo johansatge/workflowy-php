@@ -8,26 +8,52 @@ class WorkflowyList
     private $complete;
     private $description;
     private $children;
+    private $session;
 
     /**
      * Builds a recursive list
      * @param string $id
      * @param string $name
-     * @param bool   $complete
      * @param string $description
-     * @param array  $children
+     * @param bool $complete
+     * @param WorkflowyList|bool $parent
+     * @param WorkflowySession $session
+     * @internal param array $children
      */
-    public function __construct($id, $name, $complete, $description, $children)
+    public function __construct($id, $name, $description, $complete, $parent, $session)
     {
         $this->id          = $id;
         $this->name        = $name;
         $this->complete    = $complete;
         $this->description = $description;
-        $this->children    = $children;
+        $this->parent      = $parent;
+        $this->session     = $session;
+    }
+
+    public function setChildren($children)
+    {
+        $this->children = $children;
+    }
+
+    /**
+     * Getter / caller
+     * @param string $name
+     * @param array $arguments
+     * @throws WorkflowyError
+     * @return mixed
+     */
+    public function __call($name, $arguments)
+    {
+        if (count($arguments) == 0 && in_array($name, array('id', 'name', 'complete', 'description', 'children', 'parent')))
+        {
+            return $this->{$name};
+        }
+        throw new WorkflowyError('Trying to access restricted or undefined "' . $name . '"property');
     }
 
     /**
      * Search recursively if the list has the requested name
+     * @todo allow regexps ? use only one function ?
      * @param string $name
      * @return bool|WorkflowyList
      */
@@ -49,16 +75,49 @@ class WorkflowyList
     public function create($name, $description, $priority)
     {
         // @todo
+        /*
+         (object)array(
+            'type' => 'create',
+            'data' => (object)array(
+                'projectid' => $generated_test_id,
+                'parentid'  => 'None',
+                'priority'  => 6
+            )
+        )
+        /!\ after created, launch edit()
+         */
     }
 
-    public function move($parent_list, $priority)
+    /**
+     * Moves the list by setting a new parent and display priority
+     * @param WorkflowyList $parent_list
+     * @param int $priority
+     * @throws WorkflowyError
+     * @todo check answer
+     */
+    public function setPosition($parent_list, $priority)
     {
-        // @todo
+        if (empty($parent_list) || get_class($parent_list) !== __CLASS__)
+        {
+            throw new WorkflowyError('The method requires a ' . __CLASS__ . ' object');
+        }
+        $this->session->performListRequest('move', array(
+            'projectid' => $this->id,
+            'parentid'  => $parent_list->id(),
+            'priority'  => intval($priority)
+        ));
     }
 
-    public function setCompleted()
+    /**
+     * Sets the list status (TRUE when its complete, FALSE otherwise)
+     * @param bool $complete
+     * @todo check answer
+     */
+    public function setComplete($complete = true)
     {
-        // @todo
+        $this->session->performListRequest($complete ? 'complete' : 'uncomplete', array(
+            'projectid' => $this->id
+        ));
     }
 
     public function delete()
@@ -66,9 +125,30 @@ class WorkflowyList
         // @todo
     }
 
-    public function edit($list, $name, $description)
+    /**
+     * Sets the list name
+     * @param string $name
+     * @todo check answer
+     */
+    public function setName($name)
     {
-        // @todo
+        $this->session->performListRequest('edit', array(
+            'projectid' => $this->id,
+            'name'      => $name
+        ));
+    }
+
+    /**
+     * Sets the list description
+     * @param string $description
+     * @todo check answer
+     */
+    public function setDescription($description)
+    {
+        $this->session->performListRequest('edit', array(
+            'projectid'   => $this->id,
+            'description' => $description
+        ));
     }
 
     public function getOPML()
@@ -98,6 +178,16 @@ class WorkflowyList
             }
         }
         return false;
+    }
+
+    private function generateID()
+    {
+        //return((1+Math.random())*65536|0).toString(16).substring(1)
+        // k()+k()+" - "+k()+" - "+k()+" - "+k()+" - "+k()+k()+k()
+        return preg_replace_callback('#r#', function ()
+        {
+            return substr(base_convert((1 + ((float)rand() / (float)getrandmax())) * 65536 | 0, 10, 16), 1);
+        }, 'rr-r-r-r-rrr');
     }
 
 }

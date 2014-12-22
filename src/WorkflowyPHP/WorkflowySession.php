@@ -6,6 +6,7 @@ class WorkflowySession
 {
 
     private $sessionID;
+    private $clientID;
     private $mostRecentOperationTransactionId;
 
     /**
@@ -15,7 +16,7 @@ class WorkflowySession
     public function __construct($session_id)
     {
         $this->sessionID = $session_id;
-        $this->initMostRecentTransactionID();
+        $this->init();
     }
 
     /**
@@ -26,29 +27,39 @@ class WorkflowySession
     {
         $data      = $this->request('get_initialization_data');
         $raw_lists = !empty($data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren']) ? $data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren'] : array();
+        $main_list = new WorkflowyList('None', null, null, null, false, $this);
         $lists     = array();
         foreach ($raw_lists as $raw_list)
         {
-            $lists[] = $this->parseList($raw_list);
+            $lists[] = $this->parseList($raw_list, $main_list);
         }
-        return new WorkflowyList('None', null, null, null, $lists);
+        $main_list->setChildren($lists);
+        return $main_list;
     }
 
-    private function parseList($raw_list)
+    /**
+     * Parses recursively the given list and builds a WorkflowyList object
+     * @param array $raw_list
+     * @param WorkflowyList $parent_list
+     * @return WorkflowyList
+     */
+    private function parseList($raw_list, $parent_list)
     {
         $id          = !empty($raw_list['id']) ? $raw_list['id'] : '';
         $name        = !empty($raw_list['nm']) ? $raw_list['nm'] : '';
         $description = !empty($raw_list['no']) ? $raw_list['no'] : '';
         $complete    = !empty($raw_list['cp']);
         $sublists    = array();
+        $list        = new WorkflowyList($id, $name, $description, $complete, $parent_list, $this);
         if (!empty($raw_list['ch']) && is_array($raw_list['ch']))
         {
             foreach ($raw_list['ch'] as $raw_sublist)
             {
-                $sublists[] = $this->parseList($raw_sublist);
+                $sublists[] = $this->parseList($raw_sublist, $list);
             }
         }
-        return new WorkflowyList($id, $name, $description, $complete, $sublists);
+        $list->setChildren($sublists);
+        return $list;
     }
 
     /**
@@ -77,27 +88,55 @@ class WorkflowySession
     }
 
     /**
-     * Gets the most recent transaction ID
-     * That identifier is needed for each request
+     * Tries to get the init data
      */
-    private function initMostRecentTransactionID()
+    private function init()
     {
         $data = $this->request('get_initialization_data');
         if (!empty($data['projectTreeData']['mainProjectTreeInfo']['initialMostRecentOperationTransactionId']))
         {
             $this->mostRecentOperationTransactionId = $data['projectTreeData']['mainProjectTreeInfo']['initialMostRecentOperationTransactionId'];
+            $this->clientID                         = $data['projectTreeData']['clientId'];
         }
         else
         {
             throw new WorkflowyError('Could not initialise session.');
         }
+    }
 
+    /**
+     * Performs a list request
+     * May be called from a WorkflowyList object
+     * @param string $action
+     * @param array $data
+     * @return array
+     */
+    public function performListRequest($action, $data)
+    {
+        $push_poll_data = json_encode(array(
+            (object)array(
+                'most_recent_operation_transaction_id' => $this->mostRecentOperationTransactionId,
+                'operations'                           => array(
+                    (object)array(
+                        'type' => $action,
+                        'data' => (object)$data
+                    )
+                )
+            )
+        ));
+        return $this->request('push_and_poll', array(
+                'client_id'      => $this->clientID,
+                'client_version' => 14,
+                'push_poll_id'   => 'MSQBGpdw', // @todo make this dynamic
+                'push_poll_data' => $push_poll_data
+            )
+        );
     }
 
     /**
      * Performs an API request
      * @param string $method
-     * @param array  $params
+     * @param array $params
      * @return array
      */
     private function request($method, $params = array())
