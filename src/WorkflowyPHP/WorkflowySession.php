@@ -27,39 +27,34 @@ class WorkflowySession
     {
         $data      = $this->request('get_initialization_data');
         $raw_lists = !empty($data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren']) ? $data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren'] : array();
-        $main_list = new WorkflowyList('None', null, null, null, false, $this);
         $lists     = array();
         foreach ($raw_lists as $raw_list)
         {
-            $lists[] = $this->parseList($raw_list, $main_list);
+            $lists[] = $this->parseList($raw_list);
         }
-        $main_list->setChildren($lists);
-        return $main_list;
+        return new WorkflowyList('None', null, null, false, $lists, $this);
     }
 
     /**
      * Parses recursively the given list and builds a WorkflowyList object
      * @param array $raw_list
-     * @param WorkflowyList $parent_list
      * @return WorkflowyList
      */
-    private function parseList($raw_list, $parent_list)
+    private function parseList($raw_list)
     {
         $id          = !empty($raw_list['id']) ? $raw_list['id'] : '';
         $name        = !empty($raw_list['nm']) ? $raw_list['nm'] : '';
         $description = !empty($raw_list['no']) ? $raw_list['no'] : '';
         $complete    = !empty($raw_list['cp']);
         $sublists    = array();
-        $list        = new WorkflowyList($id, $name, $description, $complete, $parent_list, $this);
         if (!empty($raw_list['ch']) && is_array($raw_list['ch']))
         {
             foreach ($raw_list['ch'] as $raw_sublist)
             {
-                $sublists[] = $this->parseList($raw_sublist, $list);
+                $sublists[] = $this->parseList($raw_sublist);
             }
         }
-        $list->setChildren($sublists);
-        return $list;
+        return new WorkflowyList($id, $name, $description, $complete, $sublists, $this);
     }
 
     /**
@@ -108,7 +103,7 @@ class WorkflowySession
      * Performs a list request
      * May be called from a WorkflowyList object
      * @param string $action
-     * @param array $data
+     * @param array  $data
      * @return array
      */
     public function performListRequest($action, $data)
@@ -136,7 +131,7 @@ class WorkflowySession
     /**
      * Performs an API request
      * @param string $method
-     * @param array $params
+     * @param array  $params
      * @return array
      */
     private function request($method, $params = array())
