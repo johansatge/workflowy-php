@@ -10,14 +10,16 @@ class WorkflowyList
     private $sublists;
 
     private $session;
+    private $clientID;
 
     /**
      * Builds a recursive list
      * @param array $data
      * @param array $sublists
      * @param WorkflowySession $session
+     * @param string $client_id
      */
-    public function __construct($data, $sublists, $session)
+    public function __construct($data, $sublists, $session, $client_id)
     {
         $this->id   = !empty($data['id']) ? $data['id'] : '';
         $this->name = !empty($data['name']) ? $data['name'] : '';;
@@ -25,6 +27,7 @@ class WorkflowyList
         $this->complete = !empty($data['complete']) && $data['complete'];
         $this->sublists = $sublists;
         $this->session  = $session;
+        $this->clientID = $client_id;
     }
 
     /**
@@ -45,23 +48,25 @@ class WorkflowyList
 
     /**
      * Search recursively if the list has the requested name
-     * @todo allow regexps ? use only one function ?
+     * @todo allow regexps ?
      * @param string $name
      * @return bool|WorkflowyList
      */
-    public function searchByName($name)
+    public function searchList($name)
     {
-        return $this->search('/' . preg_quote($name, '/') . '/i', 'name');
-    }
-
-    /**
-     * Search recursively if the list has the requested ID
-     * @param string $id
-     * @return bool|WorkflowyList
-     */
-    public function searchByID($id)
-    {
-        return $this->search('/^' . preg_quote($id, '/') . '$/', 'id');
+        if (preg_match('/' . preg_quote($name, '/') . '/i', $this->name))
+        {
+            return $this;
+        }
+        foreach ($this->sublists as $child)
+        {
+            $match = $child->searchList($name);
+            if ($match !== false)
+            {
+                return $match;
+            }
+        }
+        return false;
     }
 
     public function createList($name, $description, $priority)
@@ -97,7 +102,7 @@ class WorkflowyList
             'projectid' => $this->id,
             'parentid'  => $parent_list->id(),
             'priority'  => intval($priority)
-        ));
+        ), $this->clientID);
     }
 
     /**
@@ -109,7 +114,7 @@ class WorkflowyList
     {
         $this->session->performListRequest($complete ? 'complete' : 'uncomplete', array(
             'projectid' => $this->id
-        ));
+        ), $this->clientID);
     }
 
     public function deleteList()
@@ -127,7 +132,7 @@ class WorkflowyList
         $this->session->performListRequest('edit', array(
             'projectid' => $this->id,
             'name'      => $name
-        ));
+        ), $this->clientID);
     }
 
     /**
@@ -140,36 +145,12 @@ class WorkflowyList
         $this->session->performListRequest('edit', array(
             'projectid'   => $this->id,
             'description' => $description
-        ));
+        ), $this->clientID);
     }
 
     public function getOPML()
     {
         // @todo
-    }
-
-    /**
-     * Recursively check if the given regexp matches the requested field
-     * If so, returns the list; otherwise returns false
-     * @param string $regexp
-     * @param string $field
-     * @return WorkflowyList|bool
-     */
-    private function search($regexp, $field)
-    {
-        if (preg_match($regexp, $this->{$field}))
-        {
-            return $this;
-        }
-        foreach ($this->sublists as $child)
-        {
-            $match = $child->search($regexp, $field);
-            if ($match !== false)
-            {
-                return $match;
-            }
-        }
-        return false;
     }
 
     private function generateID()

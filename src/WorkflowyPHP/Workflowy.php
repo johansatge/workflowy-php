@@ -3,6 +3,9 @@
 class Workflowy
 {
 
+    // @todo move this in the Session class
+    // @todo use a facade with the main WF class ?
+
     const LOGIN_URL     = 'https://workflowy.com/accounts/login/';
     const LOGIN_TIMEOUT = 5;
     const API_URL       = 'https://workflowy.com/%s';

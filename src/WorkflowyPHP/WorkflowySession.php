@@ -3,7 +3,7 @@
 use WorkflowyPHP\WorkflowyList;
 use WorkflowyPHP\WorkflowyError;
 
-class WorkflowySession
+class WorkflowySession // @todo refactor to "WorkflowyClient" or "Workflowy"
 {
 
     private $sessionID;
@@ -43,6 +43,7 @@ class WorkflowySession
 
     /**
      * Parses recursively the given list and builds a WorkflowyList object
+     * @todo store the relation between a parent and its child (or move this in an other class)
      * @param array $raw_list
      * @return WorkflowyList
      */
@@ -59,7 +60,7 @@ class WorkflowySession
             'name'        => !empty($raw_list['nm']) ? $raw_list['nm'] : '',
             'description' => !empty($raw_list['no']) ? $raw_list['no'] : '',
             'complete'    => !empty($raw_list['cp'])
-        ), $sublists, $this);
+        ), $sublists, $this, $this->clientID);
     }
 
     /**
@@ -86,11 +87,16 @@ class WorkflowySession
      * Called from a WorkflowyList object
      * @param string $action
      * @param array $data
+     * @param string $client_id
+     * @throws WorkflowyError
      * @return array
      */
-    public function performListRequest($action, $data)
+    public function performListRequest($action, $data, $client_id)
     {
-        // @todo make communication private with WorkflowyList objects
+        if ($client_id !== $this->clientID)
+        {
+            throw new WorkflowyError('The current list cannot communicate with this object.');
+        }
         $push_poll_data = json_encode(array(
             (object)array(
                 'most_recent_operation_transaction_id' => $this->mostRecentOperationTransactionId,
@@ -102,7 +108,7 @@ class WorkflowySession
                 )
             )
         ));
-        return $this->request('push_and_poll', array(
+        $this->request('push_and_poll', array(
                 'client_id'      => $this->clientID,
                 'client_version' => 14,
                 'push_poll_id'   => 'MSQBGpdw', // @todo make this dynamic
@@ -138,3 +144,6 @@ class WorkflowySession
     }
 
 }
+
+
+
