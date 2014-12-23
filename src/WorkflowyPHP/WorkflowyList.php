@@ -13,27 +13,24 @@ class WorkflowyList
 
     /**
      * Builds a recursive list
-     * @param string           $id
-     * @param string           $name
-     * @param string           $description
-     * @param bool             $complete
-     * @param array            $sublists
+     * @param array $data
+     * @param array $sublists
      * @param WorkflowySession $session
      */
-    public function __construct($id, $name, $description, $complete, $sublists, $session)
+    public function __construct($data, $sublists, $session)
     {
-        $this->id          = $id;
-        $this->name        = $name;
-        $this->description = $description;
-        $this->complete    = $complete;
-        $this->sublists    = $sublists;
-        $this->session     = $session;
+        $this->id   = !empty($data['id']) ? $data['id'] : '';
+        $this->name = !empty($data['name']) ? $data['name'] : '';;
+        $this->description = !empty($data['description']) ? $data['description'] : '';;
+        $this->complete = !empty($data['complete']) && $data['complete'];
+        $this->sublists = $sublists;
+        $this->session  = $session;
     }
 
     /**
      * Getter / caller
      * @param string $name
-     * @param array  $arguments
+     * @param array $arguments
      * @throws WorkflowyError
      * @return mixed
      */
@@ -86,7 +83,7 @@ class WorkflowyList
     /**
      * Moves the list by setting a new parent and display priority
      * @param WorkflowyList $parent_list
-     * @param int           $priority
+     * @param int $priority
      * @throws WorkflowyError
      * @todo check answer
      */

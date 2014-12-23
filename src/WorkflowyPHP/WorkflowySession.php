@@ -38,7 +38,7 @@ class WorkflowySession
     {
         $data      = $this->request('get_initialization_data');
         $raw_lists = !empty($data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren']) ? $data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren'] : array();
-        return $this->parseList(array('id' => 'None', 'nm' => null, 'no' => null, 'cp' => false, 'ch' => $raw_lists));
+        return $this->parseList(array('id' => 'None', 'nm' => null, 'no' => null, 'cp' => null, 'ch' => $raw_lists));
     }
 
     /**
@@ -48,17 +48,18 @@ class WorkflowySession
      */
     private function parseList($raw_list)
     {
-        $id           = !empty($raw_list['id']) ? $raw_list['id'] : '';
-        $name         = !empty($raw_list['nm']) ? $raw_list['nm'] : '';
-        $description  = !empty($raw_list['no']) ? $raw_list['no'] : '';
-        $complete     = !empty($raw_list['cp']);
         $raw_sublists = !empty($raw_list['ch']) && is_array($raw_list['ch']) ? $raw_list['ch'] : array();
         $sublists     = array();
         foreach ($raw_sublists as $raw_sublist)
         {
             $sublists[] = $this->parseList($raw_sublist);
         }
-        return new WorkflowyList($id, $name, $description, $complete, $sublists, $this);
+        return new WorkflowyList(array(
+            'id'          => !empty($raw_list['id']) ? $raw_list['id'] : '',
+            'name'        => !empty($raw_list['nm']) ? $raw_list['nm'] : '',
+            'description' => !empty($raw_list['no']) ? $raw_list['no'] : '',
+            'complete'    => !empty($raw_list['cp'])
+        ), $sublists, $this);
     }
 
     /**
@@ -84,11 +85,12 @@ class WorkflowySession
      * Performs a list request
      * Called from a WorkflowyList object
      * @param string $action
-     * @param array  $data
+     * @param array $data
      * @return array
      */
     public function performListRequest($action, $data)
     {
+        // @todo make communication private with WorkflowyList objects
         $push_poll_data = json_encode(array(
             (object)array(
                 'most_recent_operation_transaction_id' => $this->mostRecentOperationTransactionId,
@@ -112,7 +114,7 @@ class WorkflowySession
     /**
      * Performs an API request
      * @param string $method
-     * @param array  $params
+     * @param array $params
      * @return array
      */
     private function request($method, $params = array())
