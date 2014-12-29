@@ -1,4 +1,14 @@
-<?php namespace WorkflowyPHP;
+<?php
+
+/*
+ * This file is part of the WorkflowyPHP package.
+ *
+ * (c) Johan Satgé
+ *
+ * For the full copyright and license information, please view the LICENSE file that was distributed with this source code.
+ */
+
+namespace WorkflowyPHP;
 
 class WorkflowyList
 {
@@ -18,7 +28,7 @@ class WorkflowyList
      * @param array $sublists
      * @param WorkflowySession $session
      * @param string $client_id
-     */
+     *
     public function __construct($data, $sublists, $session, $client_id)
     {
         $this->id   = !empty($data['id']) ? $data['id'] : '';
@@ -36,7 +46,7 @@ class WorkflowyList
      * @param array $arguments
      * @throws WorkflowyError
      * @return mixed
-     */
+     *
     public function __call($name, $arguments)
     {
         if (count($arguments) == 0 && in_array($name, array('id', 'name', 'complete', 'description', 'children', 'parent')))
@@ -51,7 +61,7 @@ class WorkflowyList
      * @todo allow regexps ?
      * @param string $name
      * @return bool|WorkflowyList
-     */
+     *
     public function searchList($name)
     {
         if (preg_match('/' . preg_quote($name, '/') . '/i', $this->name))
@@ -82,7 +92,7 @@ class WorkflowyList
             )
         )
         /!\ after created, launch edit()
-         */
+         *
     }
 
     /**
@@ -91,7 +101,7 @@ class WorkflowyList
      * @param int $priority
      * @throws WorkflowyError
      * @todo check answer
-     */
+     *
     public function setPosition($parent_list, $priority)
     {
         if (empty($parent_list) || get_class($parent_list) !== __CLASS__)
@@ -109,7 +119,7 @@ class WorkflowyList
      * Sets the list status (TRUE when its complete, FALSE otherwise)
      * @param bool $complete
      * @todo check answer
-     */
+     *
     public function setComplete($complete = true)
     {
         $this->session->performListRequest($complete ? 'complete' : 'uncomplete', array(
@@ -126,7 +136,7 @@ class WorkflowyList
      * Sets the list name
      * @param string $name
      * @todo check answer
-     */
+     *
     public function setName($name)
     {
         $this->session->performListRequest('edit', array(
@@ -139,7 +149,7 @@ class WorkflowyList
      * Sets the list description
      * @param string $description
      * @todo check answer
-     */
+     *
     public function setDescription($description)
     {
         $this->session->performListRequest('edit', array(
@@ -161,6 +171,6 @@ class WorkflowyList
         {
             return substr(base_convert((1 + ((float)rand() / (float)getrandmax())) * 65536 | 0, 10, 16), 1);
         }, 'rr-r-r-r-rrr');
-    }
+    }*/
 
 }

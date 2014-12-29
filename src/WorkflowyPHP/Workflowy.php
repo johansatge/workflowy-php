@@ -30,7 +30,8 @@ class Workflowy
         {
             throw new WorkflowyException('You must provide credentials as strings');
         }
-        $answer = WorkflowyTransport::curl(WorkflowyTransport::LOGIN_URL, array('username' => $username, 'password' => $password, 'next' => ''), true, false);
+        $transport = new WorkflowyTransport();
+        $answer    = $transport->curl(WorkflowyTransport::LOGIN_URL, array('username' => $username, 'password' => $password, 'next' => ''), true, false);
         preg_match('#^Set-Cookie:\s*sessionid=([^;]*)#mi', $answer, $session_id_match);
         if (preg_match('#^Location:#mi', $answer) && !empty($session_id_match[1]))
         {

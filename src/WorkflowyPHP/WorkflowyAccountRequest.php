@@ -43,4 +43,20 @@ class WorkflowyAccount
         // @todo
     }
 
+    /*
+     * public function getAccount()
+    {
+    $data     = $this->request('get_initialization_data');
+    $settings = array(
+    'username'               => !empty($data['settings']['username']) ? $data['settings']['username'] : false,
+    'theme'                  => !empty($data['settings']['theme']) ? $data['settings']['theme'] : false,
+    'email'                  => !empty($data['settings']['email']) ? $data['settings']['email'] : false,
+    'items_created_in_month' => !empty($data['projectTreeData']['mainProjectTreeInfo']['itemsCreatedInCurrentMonth']) ? intval($data['projectTreeData']['mainProjectTreeInfo']['itemsCreatedInCurrentMonth']) : false,
+    'monthly_quota'          => !empty($data['projectTreeData']['mainProjectTreeInfo']['monthlyItemQuota']) ? intval($data['projectTreeData']['mainProjectTreeInfo']['monthlyItemQuota']) : false,
+    'registration_date'      => !empty($data['projectTreeData']['mainProjectTreeInfo']['dateJoinedTimestampInSeconds']) ? date('Y-m-d H:i:s', intval($data['projectTreeData']['mainProjectTreeInfo']['dateJoinedTimestampInSeconds'])) : false,
+    );
+    return $settings;
+    }
+     */
+
 }

@@ -17,16 +17,27 @@ class WorkflowyTransport
     const API_URL   = 'https://workflowy.com/%s';
     const TIMEOUT   = 5;
 
+    private $sessionID;
+
+    public function __construct($session_id = false)
+    {
+        if ($session_id !== false && (!is_string($session_id) || !preg_match('/^[a-z0-9]{32}$/', $session_id)))
+        {
+            throw new WorkflowyError('Invalid session ID');
+        }
+        $this->sessionID = $session_id;
+    }
+
     /**
      * Sends a CURL request to the request URL, by using the given POST data and parameters
      * @param string $url
-     * @param array $post_fields
-     * @param bool $return_headers
-     * @param bool $return_json
+     * @param array  $post_fields
+     * @param bool   $return_headers
+     * @param bool   $return_json
      * @throws WorkflowyException
      * @return array|string
      */
-    public static function curl($url, $post_fields, $return_headers, $return_json)
+    public function curl($url, $post_fields, $return_headers, $return_json)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -38,6 +49,10 @@ class WorkflowyTransport
         {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
+        }
+        if (!empty($this->sessionID))
+        {
+            curl_setopt($ch, CURLOPT_HTTPHEADER, array('Cookie: sessionid=' . $this->sessionID));
         }
         $raw_data = curl_exec($ch);
         $error    = curl_error($ch);
