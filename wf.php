@@ -3,55 +3,53 @@
 
 date_default_timezone_set('Europe/Paris');
 
-// for now, static (@todo autoloader)
-require_once 'src/WorkflowyPHP/Workflowy.php';
-require_once 'src/WorkflowyPHP/WorkflowySession.php';
-require_once 'src/WorkflowyPHP/WorkflowyList.php';
-require_once 'src/WorkflowyPHP/WorkflowyError.php';
-
 require_once 'vendor/autoload.php';
 
-use WorkflowyPHP\Workflowy;
-use WorkflowyPHP\WorkflowySession;
-
-$session_id = !empty($_GET['sessionid']) ? $_GET['sessionid'] : Workflowy::login('workflowy1@yopmail.com', 'workflowy1');
-s($session_id);
-
-$session = new WorkflowySession($session_id);
-
-$list = $session->getList();
-
-$item = $list->searchList('test2 sub1 sub1');
-s($item);
-
-$item->setDescription(date('d-m-Y H:i:s'));
-$item->setComplete(false);
-
-// ------------------------------------------------------------------------------------------------------------------------
+// for now, static (@todo autoloader)
+$classes = glob('src/WorkflowyPHP/*.php');
+foreach ($classes as $path)
+{
+    require_once $path;
+}
 
 /**
- * Sample usage @TODO
+ * Sample usage
  */
+
+use WorkflowyPHP\Workflowy;
+use WorkflowyPHP\WorkflowyException;
+use WorkflowyPHP\WorkflowyAccountRequest;
+use WorkflowyPHP\WorkflowyListRequest;
 
 /**
  * Session
  */
 
-$session_id = Workflowy::login('user@domain.org', 'password');
-$client = Workflowy::open($session_id);
+try
+{
+    $uniqid = Workflowy::login('workflowy1@yopmail.com', 'workflowy1');
+    s($uniqid);
+}
+catch (WorkflowyException $e)
+{
+    s($e->getMessage());
+}
 
 /**
  * Lists
  */
 
-$list = $client->getList();
-$sublist = $list->search('my sublist'); // allow regexps ?
+$list_request = new WorkflowyListRequest($uniqid);
+$list = $list_request->getList();
+
+$sublist = $list->search('one of my first level lists'); // allow regexps ? allow to return multiple results ?
 
 $sublist->getName();
 $sublist->getDescription();
 $sublist->getParent();
 $sublist->isComplete();
 $sublist->getOPML();
+$sublist->$list->search('my sub-sub-list');
 
 $sublist->setName('my sublist');
 $sublist->setDescription('my description');
@@ -62,10 +60,10 @@ $sublist->setComplete(true || false);
  * Account
  */
 
-$account = $client->getAccount();
+$account_request = new WorkflowyAccountRequest($uniqid);
 
-$account->getEmail();
-$account->getRegistrationDate();
-$account->getTheme();
-$account->getItemsCreatedInMmonth();
-$account->getMonthlyQuota();
+$account_request->getEmail();
+$account_request->getRegistrationDate();
+$account_request->getTheme();
+$account_request->getItemsCreatedInMmonth();
+$account_request->getMonthlyQuota();

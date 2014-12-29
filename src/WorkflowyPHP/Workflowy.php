@@ -1,44 +1,42 @@
-<?php namespace WorkflowyPHP;
+<?php
+
+/*
+ * This file is part of the WorkflowyPHP package.
+ *
+ * (c) Johan Satgé
+ *
+ * For the full copyright and license information, please view the LICENSE file that was distributed with this source code.
+ */
+
+namespace WorkflowyPHP;
+
+use WorkflowyPHP\WorkflowyException;
+use WorkflowyPHP\WorkflowySession;
 
 class Workflowy
 {
 
-    // @todo move this in the Session class
-    // @todo use a facade with the main WF class ?
-
-    const LOGIN_URL     = 'https://workflowy.com/accounts/login/';
-    const LOGIN_TIMEOUT = 5;
-    const API_URL       = 'https://workflowy.com/%s';
-
     /**
-     * Tries to log in using the given credentials
-     * Returns the session ID on success, FALSE otherwise
+     * Tries to login using the given credentials
+     * @todo move in a WorkflowyLogin class ?
      * @param string $username
      * @param string $password
-     * @return bool|string
+     * @throws WorkflowyException
+     * @return string
      */
     public static function login($username, $password)
     {
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, Workflowy::LOGIN_URL);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HEADER, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, Workflowy::LOGIN_TIMEOUT);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, array(
-            'username' => $username,
-            'password' => $password,
-            'next'     => ''
-        ));
-        $raw_data = curl_exec($ch);
-        curl_close($ch);
-        preg_match('#^Set-Cookie:\s*sessionid=([^;]*)#mi', $raw_data, $session_id_match);
-        if (preg_match('#^Location:#mi', $raw_data) && !empty($session_id_match[1]))
+        if (empty($username) || empty($password) || !is_string($username) || !is_string($password))
+        {
+            throw new WorkflowyException('You must provide credentials as strings');
+        }
+        $answer = WorkflowyTransport::curl(WorkflowyTransport::LOGIN_URL, array('username' => $username, 'password' => $password, 'next' => ''), true, false);
+        preg_match('#^Set-Cookie:\s*sessionid=([^;]*)#mi', $answer, $session_id_match);
+        if (preg_match('#^Location:#mi', $answer) && !empty($session_id_match[1]))
         {
             return $session_id_match[1];
         }
-        return false;
+        throw new WorkflowyException('Could not open the session with those credentials');
     }
 
 }
