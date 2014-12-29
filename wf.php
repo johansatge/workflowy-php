@@ -25,14 +25,21 @@ use WorkflowyPHP\WorkflowyListRequest;
  * Session
  */
 
-try
+if (!empty($_GET['sessionid']))
 {
-    $uniqid = Workflowy::login('workflowy1@yopmail.com', 'workflowy1');
-    s($uniqid);
+    $uniqid = $_GET['sessionid'];
 }
-catch (WorkflowyException $e)
+else
 {
-    s($e->getMessage());
+    try
+    {
+        $uniqid = Workflowy::login('workflowy1@yopmail.com', 'workflowy1');
+        s($uniqid);
+    }
+    catch (WorkflowyException $e)
+    {
+        s($e->getMessage());
+    }
 }
 
 /**
@@ -42,7 +49,10 @@ catch (WorkflowyException $e)
 $list_request = new WorkflowyListRequest($uniqid);
 $list = $list_request->getList();
 
-$sublist = $list->search('one of my first level lists'); // allow regexps ? allow to return multiple results ?
+$sublist = $list->search('test1');
+
+
+/*
 
 $sublist->getName();
 $sublist->getDescription();
@@ -56,9 +66,9 @@ $sublist->setDescription('my description');
 $sublist->setParent($list, 2);
 $sublist->setComplete(true || false);
 
-/**
+/*
  * Account
- */
+ *
 
 $account_request = new WorkflowyAccountRequest($uniqid);
 
@@ -67,3 +77,4 @@ $account_request->getRegistrationDate();
 $account_request->getTheme();
 $account_request->getItemsCreatedInMmonth();
 $account_request->getMonthlyQuota();
+*/

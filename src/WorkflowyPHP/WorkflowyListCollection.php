@@ -10,46 +10,39 @@
 
 namespace WorkflowyPHP;
 
-use WorkflowyPHP\WorkflowyTransport;
-
-class WorkflowyListRequest
+class WorkflowyListCollection
 {
 
     private $uniqid;
+    private $transport;
 
     public function __construct($uniqid)
     {
-        $this->uniqid = $uniqid;
+        $this->uniqid    = $uniqid;
+        $this->transport = new WorkflowyTransport($uniqid);
     }
 
+    /**
+     * Returns the main list
+     * @return WorkflowyList
+     */
     public function getList()
     {
-        $transport = new WorkflowyTransport($this->uniqid);
-        $data      = $transport->curl(sprintf(WorkflowyTransport::API_URL, 'get_initialization_data'), array(), false, true);
+        $data      = $this->transport->requestAPI('get_initialization_data');
         $raw_lists = array();
         if (!empty($data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren']))
         {
             $raw_lists = $data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren'];
         }
-        s($raw_lists);
-        exit;
-        // @todo
-    }
-
-    /*
-    public function getList()
-    {
-        $data      = $this->request('get_initialization_data');
-        $raw_lists = !empty($data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren']) ? $data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren'] : array();
         return $this->parseList(array('id' => 'None', 'nm' => null, 'no' => null, 'cp' => null, 'ch' => $raw_lists));
     }
 
-    /*
-     * Parses recursively the given list and builds a WorkflowyList object
+    /**
+     * Recursively parses the given list and builds an object
      * @todo store the relation between a parent and its child (or move this in an other class)
      * @param array $raw_list
      * @return WorkflowyList
-     *
+     */
     private function parseList($raw_list)
     {
         $raw_sublists = !empty($raw_list['ch']) && is_array($raw_list['ch']) ? $raw_list['ch'] : array();
@@ -63,8 +56,11 @@ class WorkflowyListRequest
             'name'        => !empty($raw_list['nm']) ? $raw_list['nm'] : '',
             'description' => !empty($raw_list['no']) ? $raw_list['no'] : '',
             'complete'    => !empty($raw_list['cp'])
-        ), $sublists, $this, $this->clientID);
+        ), $sublists, $this->transport);
     }
+
+    /*
+
 
 
     /*

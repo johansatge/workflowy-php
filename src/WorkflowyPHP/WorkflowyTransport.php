@@ -23,21 +23,64 @@ class WorkflowyTransport
     {
         if ($session_id !== false && (!is_string($session_id) || !preg_match('/^[a-z0-9]{32}$/', $session_id)))
         {
-            throw new WorkflowyError('Invalid session ID');
+            throw new WorkflowyException('Invalid session ID');
         }
         $this->sessionID = $session_id;
     }
 
     /**
-     * Sends a CURL request to the request URL, by using the given POST data and parameters
+     * Makes an API request and returns the answer
+     * @param string $method
+     * @param array  $data
+     * @throws WorkflowyException
+     * @return array
+     */
+    public function requestAPI($method, $data = array())
+    {
+        if (empty($this->sessionID))
+        {
+            throw new WorkflowyException('A session ID is needed to make API calls');
+        }
+        if (!is_string($method) || !preg_match('/^[a-zA-Z-_]{1,}$/', $method) || !is_array($data))
+        {
+            throw new WorkflowyException('Invalid API request');
+        }
+        $raw_data = $this->curl(sprintf(self::API_URL, $method), $data, false);
+        $json     = json_decode($raw_data, true);
+        if ($json === null)
+        {
+            throw new WorkflowyException('Could not decode JSON');
+        }
+        return $json;
+    }
+
+    /**
+     * Makes a login request and returns the resulting session ID
+     * @param string $username
+     * @param string $password
+     * @throws WorkflowyException
+     * @return bool
+     */
+    public function requestLogin($username, $password)
+    {
+        if (empty($username) || empty($password) || !is_string($username) || !is_string($password))
+        {
+            throw new WorkflowyException('You must provide credentials as strings');
+        }
+        $raw_data = $this->curl(self::LOGIN_URL, array('username' => $username, 'password' => $password, 'next' => ''), true);
+        preg_match('#^Set-Cookie:\s*sessionid=([^;]*)#mi', $raw_data, $session_id_match);
+        return preg_match('#^Location:#mi', $raw_data) && !empty($session_id_match[1]) ? $session_id_match[1] : false;
+    }
+
+    /**
+     * Sends a CURL request to the server, by using the given POST data
      * @param string $url
      * @param array  $post_fields
      * @param bool   $return_headers
-     * @param bool   $return_json
      * @throws WorkflowyException
      * @return array|string
      */
-    public function curl($url, $post_fields, $return_headers, $return_json)
+    private function curl($url, $post_fields, $return_headers)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -45,7 +88,7 @@ class WorkflowyTransport
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_HEADER, $return_headers ? true : false);
         curl_setopt($ch, CURLOPT_TIMEOUT, self::TIMEOUT);
-        if (is_array($post_fields) && count($post_fields) > 0)
+        if (count($post_fields) > 0)
         {
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
@@ -60,15 +103,6 @@ class WorkflowyTransport
         if (!empty($error))
         {
             throw new WorkflowyException($error);
-        }
-        if ($return_json)
-        {
-            $json = json_decode($raw_data, true);
-            if ($json === null)
-            {
-                throw new WorkflowyException('Could not decode JSON');
-            }
-            return $json;
         }
         return $raw_data;
     }

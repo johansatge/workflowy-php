@@ -19,50 +19,58 @@ class WorkflowyList
     private $description;
     private $sublists;
 
-    private $session;
-    private $clientID;
+    private $transport;
 
     /**
      * Builds a recursive list
-     * @param array $data
-     * @param array $sublists
-     * @param WorkflowySession $session
-     * @param string $client_id
-     *
-    public function __construct($data, $sublists, $session, $client_id)
+     * @param array                $data
+     * @param array                $sublists
+     * @param   WorkflowyTransport $transport
+     * @internal param string $client_id
+     */
+    public function __construct($data, $sublists, $transport)
     {
-        $this->id   = !empty($data['id']) ? $data['id'] : '';
-        $this->name = !empty($data['name']) ? $data['name'] : '';;
-        $this->description = !empty($data['description']) ? $data['description'] : '';;
-        $this->complete = !empty($data['complete']) && $data['complete'];
-        $this->sublists = $sublists;
-        $this->session  = $session;
-        $this->clientID = $client_id;
+        $this->id          = !empty($data['id']) ? $data['id'] : '';
+        $this->name        = !empty($data['name']) ? $data['name'] : '';
+        $this->description = !empty($data['description']) ? $data['description'] : '';
+        $this->complete    = !empty($data['complete']) && $data['complete'];
+        $this->sublists    = $sublists; // @todo check type
+        $this->transport   = $transport; // @todo check type
     }
 
-    /**
-     * Getter / caller
-     * @param string $name
-     * @param array $arguments
-     * @throws WorkflowyError
-     * @return mixed
-     *
-    public function __call($name, $arguments)
+    public function getName()
     {
-        if (count($arguments) == 0 && in_array($name, array('id', 'name', 'complete', 'description', 'children', 'parent')))
-        {
-            return $this->{$name};
-        }
-        throw new WorkflowyError('Trying to access restricted or undefined "' . $name . '"property');
+        return $this->name;
+    }
+
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    public function getParent()
+    {
+        // @todo
+    }
+
+    public function isComplete()
+    {
+        // @todo
+    }
+
+    public function getOPML()
+    {
+        // @todo
     }
 
     /**
      * Search recursively if the list has the requested name
      * @todo allow regexps ?
+     * @todo return multiple results ?
      * @param string $name
      * @return bool|WorkflowyList
-     *
-    public function searchList($name)
+     */
+    public function search($name)
     {
         if (preg_match('/' . preg_quote($name, '/') . '/i', $this->name))
         {
@@ -70,7 +78,7 @@ class WorkflowyList
         }
         foreach ($this->sublists as $child)
         {
-            $match = $child->searchList($name);
+            $match = $child->search($name);
             if ($match !== false)
             {
                 return $match;
@@ -78,6 +86,29 @@ class WorkflowyList
         }
         return false;
     }
+
+    public function setName($name)
+    {
+        // @todo
+    }
+
+    public function setDescription($description)
+    {
+        // @todo
+    }
+
+    public function setParent($parent, $priority)
+    {
+        // @todo
+    }
+
+    public function setComplete($complete)
+    {
+        // @todo
+    }
+
+
+    /*
 
     public function createList($name, $description, $priority)
     {
@@ -95,7 +126,7 @@ class WorkflowyList
          *
     }
 
-    /**
+    /*
      * Moves the list by setting a new parent and display priority
      * @param WorkflowyList $parent_list
      * @param int $priority
@@ -115,7 +146,7 @@ class WorkflowyList
         ), $this->clientID);
     }
 
-    /**
+    /*
      * Sets the list status (TRUE when its complete, FALSE otherwise)
      * @param bool $complete
      * @todo check answer
@@ -132,7 +163,7 @@ class WorkflowyList
         // @todo
     }
 
-    /**
+    /*
      * Sets the list name
      * @param string $name
      * @todo check answer
@@ -145,7 +176,7 @@ class WorkflowyList
         ), $this->clientID);
     }
 
-    /**
+    /*
      * Sets the list description
      * @param string $description
      * @todo check answer
