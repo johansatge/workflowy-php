@@ -18,13 +18,21 @@ class WorkflowyOPML
     /**
      * Builds an OPML exporter by using the given list
      * @param WorkflowySublist $sublist
+     * @throws WorkflowyException
      */
     public function __construct($sublist)
     {
-        // @todo check object class
+        if (!is_a($sublist, '\WorkflowyPHP\WorkflowySublist'))
+        {
+            throw new WorkflowyException('$sublist must be a WorkflowySublist instance');
+        }
         $this->sublist = $sublist;
     }
 
+    /**
+     * Exports the given list
+     * @return string
+     */
     public function export()
     {
         // @todo

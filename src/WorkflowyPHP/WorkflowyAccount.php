@@ -25,12 +25,12 @@ class WorkflowyAccount
      * Builds a Workflowy account
      * The class holds the account informations associated to the given session
      * @param string $session_id
+     * @throws WorkflowyException
      */
     public function __construct($session_id)
     {
-        $this->transport = new WorkflowyTransport($session_id);
-        $data            = $this->transport->apiRequest('get_initialization_data');
-
+        $this->transport           = new WorkflowyTransport($session_id);
+        $data                      = $this->transport->apiRequest('get_initialization_data');
         $this->username            = !empty($data['settings']['username']) ? $data['settings']['username'] : '';
         $this->theme               = !empty($data['settings']['theme']) ? $data['settings']['theme'] : '';
         $this->email               = !empty($data['settings']['email']) ? $data['settings']['email'] : '';
@@ -49,21 +49,21 @@ class WorkflowyAccount
     }
 
     /**
-     * Returns the email address
-     * @return string
-     */
-    public function getEmail()
-    {
-        return $this->email;
-    }
-
-    /**
      * Returns the current theme name
      * @return string
      */
     public function getTheme()
     {
         return $this->theme;
+    }
+
+    /**
+     * Returns the email address
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
     }
 
     /**
@@ -81,7 +81,7 @@ class WorkflowyAccount
      */
     public function getMonthlyQuota()
     {
-        return $this->registrationDate;
+        return $this->monthlyQuota;
     }
 
     /**

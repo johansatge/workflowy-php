@@ -21,6 +21,7 @@ class WorkflowyList
      * Builds a Workflowy list
      * The class holds the hierarchic relations between all its sublists (parents / children)
      * @param string $session_id
+     * @throws WorkflowyException
      */
     public function __construct($session_id)
     {

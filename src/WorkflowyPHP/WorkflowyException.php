@@ -24,8 +24,8 @@ class WorkflowyException extends \Exception
      */
     public function __construct($message, $code = 0)
     {
-        $this->message = $message;
-        $this->code    = $code;
+        $this->message = is_string($message) ? $message : '';
+        $this->code    = is_int($code) ? $code : 0;
     }
 
 }

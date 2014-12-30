@@ -46,14 +46,16 @@ else
  * Account
  */
 
+/*
 $account_request = new WorkflowyAccount($session_id);
-$account_request->getUsername();
-$account_request->getEmail();
-$account_request->getRegistrationDate();
-$account_request->getTheme();
-$account_request->getItemsCreatedInMmonth();
-$account_request->getMonthlyQuota();
+s($account_request->getUsername());
+s($account_request->getEmail());
+s($account_request->getRegistrationDate());
+s($account_request->getTheme());
+s($account_request->getItemsCreatedInMmonth());
+s($account_request->getMonthlyQuota());
 exit;
+*/
 
 /**
  * Lists

@@ -25,7 +25,7 @@ class WorkflowySublist
     /**
      * Builds a recursive list
      * This class is used to read a list content or update it
-     * /!\ Keep in mind than on update, the list content will not be impacted (for instance, when moving a sublist to an other parent, or when modyfing the description)
+     * /!\ @todo Keep in mind than on update, the list content will not be impacted (for instance, when moving a sublist to an other parent, or when modyfing the description)
      * @param string $id
      * @param string $name
      * @param string $description
@@ -33,6 +33,7 @@ class WorkflowySublist
      * @param array $sublists
      * @param WorkflowyList $list
      * @param WorkflowyTransport $transport
+     * @throws WorkflowyException
      */
     public function __construct($id, $name, $description, $complete, $sublists, $list, $transport)
     {
@@ -40,9 +41,28 @@ class WorkflowySublist
         $this->name        = is_string($name) ? $name : '';
         $this->description = is_string($description) ? $description : '';
         $this->complete    = $complete ? true : false;
-        $this->sublists    = $sublists; // @todo check type
-        $this->list        = $list; // @todo check type
-        $this->transport   = $transport; // @todo check type
+        $this->sublists    = array();
+        if (is_array($sublists))
+        {
+            foreach ($sublists as $sublist)
+            {
+                if (!is_a($sublist, '\WorkflowyPHP\WorkflowySublist'))
+                {
+                    throw new WorkflowyException('$sublists must be an array of WorkflowySublist instances');
+                }
+                $this->sublists[] = $sublist;
+            }
+        }
+        if (!is_a($list, '\WorkflowyPHP\WorkflowyList'))
+        {
+            throw new WorkflowyException('$list must be a WorkflowyList instance');
+        }
+        $this->list = $list;
+        if (!is_a($transport, '\WorkflowyPHP\WorkflowyTransport'))
+        {
+            throw new WorkflowyException('$transport must be a WorkflowyTransport instance');
+        }
+        $this->transport = $transport;
     }
 
     /**
@@ -106,11 +126,15 @@ class WorkflowySublist
      * @todo allow regexps ?
      * @todo return multiple results ?
      * @param string $name
+     * @throws WorkflowyException
      * @return bool|WorkflowyList
      */
     public function search($name)
     {
-        // @todo check string
+        if (!is_string($name))
+        {
+            throw new WorkflowyException('Search term must be a string');
+        }
         if (preg_match('/' . preg_quote($name, '/') . '/i', $this->name))
         {
             return $this;
