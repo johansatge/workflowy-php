@@ -20,7 +20,7 @@ class WorkflowyException extends \Exception
      * Builds a custom Workflowy exception
      * For now, uses the \Exception behavior
      * @param string $message
-     * @param int $code
+     * @param int    $code
      */
     public function __construct($message, $code = 0)
     {

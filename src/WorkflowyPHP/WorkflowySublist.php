@@ -25,13 +25,14 @@ class WorkflowySublist
     /**
      * Builds a recursive list
      * This class is used to read a list content or update it
-     * /!\ @todo Keep in mind than on update, the list content will not be impacted (for instance, when moving a sublist to an other parent, or when modyfing the description)
-     * @param string $id
-     * @param string $name
-     * @param string $description
-     * @param bool $complete
-     * @param array $sublists
-     * @param WorkflowyList $list
+     * /!\ Keep in mind than on update, the list content will not be impacted
+     *     For instance, when modyfing the description, the getDescription method will still return the old value
+     * @param string             $id
+     * @param string             $name
+     * @param string             $description
+     * @param bool               $complete
+     * @param array              $sublists
+     * @param WorkflowyList      $list
      * @param WorkflowyTransport $transport
      * @throws WorkflowyException
      */
@@ -48,21 +49,30 @@ class WorkflowySublist
             {
                 if (!is_a($sublist, '\WorkflowyPHP\WorkflowySublist'))
                 {
-                    throw new WorkflowyException('$sublists must be an array of WorkflowySublist instances');
+                    throw new WorkflowyException('Sublists must be WorkflowySublist instances');
                 }
                 $this->sublists[] = $sublist;
             }
         }
         if (!is_a($list, '\WorkflowyPHP\WorkflowyList'))
         {
-            throw new WorkflowyException('$list must be a WorkflowyList instance');
+            throw new WorkflowyException('List must be a WorkflowyList instance');
         }
         $this->list = $list;
         if (!is_a($transport, '\WorkflowyPHP\WorkflowyTransport'))
         {
-            throw new WorkflowyException('$transport must be a WorkflowyTransport instance');
+            throw new WorkflowyException('Transport must be a WorkflowyTransport instance');
         }
         $this->transport = $transport;
+    }
+
+    /**
+     * Returns the list ID
+     * @return string
+     */
+    public function getID()
+    {
+        return $this->id;
     }
 
     /**
@@ -101,16 +111,6 @@ class WorkflowySublist
         return $this->complete;
     }
 
-    public function isAncestorOf()
-    {
-        // @todo
-    }
-
-    public function isChildOf()
-    {
-        // @todo
-    }
-
     /**
      * Returns the OPML view
      * @return string
@@ -122,32 +122,39 @@ class WorkflowySublist
     }
 
     /**
-     * Search recursively if the list has the requested name
-     * @todo allow regexps ?
-     * @todo return multiple results ?
-     * @param string $name
+     * Search recursively if the list name matches the given expression
+     * Returns the first match, or an array of matches if the $get_all parameter is set to true
+     * @param string $expression
+     * @param bool   $get_all
      * @throws WorkflowyException
      * @return bool|WorkflowyList
      */
-    public function search($name)
+    public function search($expression, $get_all = false)
     {
-        if (!is_string($name))
+        if (!is_string($expression) || preg_match($expression, null) === false)
         {
-            throw new WorkflowyException('Search term must be a string');
+            throw new WorkflowyException('Search expression must be a valid regular expression');
         }
-        if (preg_match('/' . preg_quote($name, '/') . '/i', $this->name))
+        $get_all = $get_all ? true : false;
+        $matches = array();
+        if (preg_match($expression, $this->name))
         {
-            return $this;
+            if (!$get_all)
+            {
+                return $this;
+            }
+            $matches[] = $this;
         }
         foreach ($this->sublists as $child)
         {
-            $match = $child->search($name);
-            if ($match !== false)
+            $match = $child->search($expression, $get_all);
+            if ($match !== false && !$get_all)
             {
                 return $match;
             }
+            $matches = array_merge($matches, $match);
         }
-        return false;
+        return $get_all ? $matches : false;;
     }
 
     /**
@@ -192,26 +199,32 @@ class WorkflowySublist
         $this->transport->listRequest(($complete ? 'complete' : 'uncomplete'), array('projectid' => $this->id));
     }
 
-    public function setParent($parent, $priority)
+    /**
+     * Sets the parent and priority of the list
+     * @param WorkflowySublist $parent_sublist
+     * @param int              $priority
+     * @throws WorkflowyException
+     */
+    public function setParent($parent_sublist, $priority)
     {
-        // @todo
-        /*
-        if (empty($parent_list) || get_class($parent_list) !== __CLASS__)
+        if (empty($parent_sublist) || !is_a($parent_sublist, __CLASS__))
         {
-            throw new WorkflowyError('The method requires a ' . __CLASS__ . ' object');
+            throw new WorkflowyException('Parent sublist must be a ' . __CLASS__ . ' instance');
         }
-        $this->session->performListRequest('move', array(
+        $this->transport->listRequest('move', array(
             'projectid' => $this->id,
-            'parentid'  => $parent_list->id(),
+            'parentid'  => $parent_sublist->getID(),
             'priority'  => intval($priority)
-        ), $this->clientID);
-
-         */
+        ));
     }
 
+    /**
+     * Delets the current sublist
+     * This will also delete its children
+     */
     public function delete()
     {
-        // @todo
+        $this->transport->listRequest('delete', array('projectid' => $this->id));
     }
 
     public function createSublist()

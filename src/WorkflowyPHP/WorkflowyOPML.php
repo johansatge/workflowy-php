@@ -24,7 +24,7 @@ class WorkflowyOPML
     {
         if (!is_a($sublist, '\WorkflowyPHP\WorkflowySublist'))
         {
-            throw new WorkflowyException('$sublist must be a WorkflowySublist instance');
+            throw new WorkflowyException('Sublist must be a WorkflowySublist instance');
         }
         $this->sublist = $sublist;
     }

@@ -39,7 +39,7 @@ class WorkflowyTransport
     /**
      * Performs a list request
      * @param string $action
-     * @param array $data
+     * @param array  $data
      * @throws WorkflowyException
      * @return array
      */
@@ -50,21 +50,20 @@ class WorkflowyTransport
             throw new WorkflowyException('Invalid list request');
         }
         $this->apiRequest('push_and_poll', array(
-                'client_id'      => $this->clientID,
-                'client_version' => 14,
-                'push_poll_id'   => 'MSQBGpdw', // @todo make this dynamic
-                'push_poll_data' => json_encode(array((object)array(
-                    'most_recent_operation_transaction_id' => $this->mostRecentOperationTransactionId,
-                    'operations'                           => array((object)array('type' => $action, 'data' => (object)$data))
-                )))
-            )
-        );
+            'client_id'      => $this->clientID,
+            'client_version' => 14,
+            'push_poll_id'   => 'MSQBGpdw', // @todo make this dynamic
+            'push_poll_data' => json_encode(array((object)array(
+                'most_recent_operation_transaction_id' => $this->mostRecentOperationTransactionId,
+                'operations'                           => array((object)array('type' => $action, 'data' => (object)$data))
+            )))
+        ));
     }
 
     /**
      * Makes an API request and returns the answer
      * @param string $method
-     * @param array $data
+     * @param array  $data
      * @throws WorkflowyException
      * @return array
      */
@@ -117,8 +116,8 @@ class WorkflowyTransport
     /**
      * Sends a CURL request to the server, by using the given POST data
      * @param string $url
-     * @param array $post_fields
-     * @param bool $return_headers
+     * @param array  $post_fields
+     * @param bool   $return_headers
      * @throws WorkflowyException
      * @return array|string
      */

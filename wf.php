@@ -64,13 +64,14 @@ exit;
 $list_request = new WorkflowyList($session_id);
 $list = $list_request->getList();
 
-$sublist = $list->search('test1 sub2');
-
+$sublist = $list->search('/#tag1/i');
 s($sublist->getName());
 $sublist->setDescription(date('d-m-Y H:i:s'));
 
+
 /*
 
+$sublist->getID();
 $sublist->getName();
 $sublist->getDescription();
 $sublist->getParent();
