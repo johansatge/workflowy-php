@@ -5,13 +5,6 @@ date_default_timezone_set('Europe/Paris');
 
 require_once 'vendor/autoload.php';
 
-// for now, static (@todo autoloader)
-$classes = glob('src/WorkflowyPHP/*.php');
-foreach ($classes as $path)
-{
-    require_once $path;
-}
-
 /**
  * Sample usage
  */
@@ -34,11 +27,11 @@ else
     try
     {
         $session_id = Workflowy::login('workflowy1@yopmail.com', 'workflowy1');
-        s($session_id);
+        var_dump($session_id);
     }
     catch (WorkflowyException $e)
     {
-        s($e->getMessage());
+        var_dump($e->getMessage());
     }
 }
 
@@ -48,12 +41,12 @@ else
 
 /*
 $account_request = new WorkflowyAccount($session_id);
-s($account_request->getUsername());
-s($account_request->getEmail());
-s($account_request->getRegistrationDate());
-s($account_request->getTheme());
-s($account_request->getItemsCreatedInMmonth());
-s($account_request->getMonthlyQuota());
+var_dump($account_request->getUsername());
+var_dump($account_request->getEmail());
+var_dump($account_request->getRegistrationDate());
+var_dump($account_request->getTheme());
+var_dump($account_request->getItemsCreatedInMmonth());
+var_dump($account_request->getMonthlyQuota());
 exit;
 */
 
@@ -65,7 +58,7 @@ $list_request = new WorkflowyList($session_id);
 $list = $list_request->getList();
 
 $sublist = $list->search('/#tag1/i');
-s($sublist->getName());
+var_dump($sublist->getName());
 $sublist->setDescription(date('d-m-Y H:i:s'));
 
 
