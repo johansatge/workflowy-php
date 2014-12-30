@@ -26,7 +26,7 @@ class Workflowy
     public static function login($username, $password)
     {
         $transport = new WorkflowyTransport();
-        $answer    = $transport->requestLogin($username, $password);
+        $answer    = $transport->loginRequest($username, $password);
         if ($answer !== false)
         {
             return $answer;

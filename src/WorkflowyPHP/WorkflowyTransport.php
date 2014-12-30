@@ -18,7 +18,15 @@ class WorkflowyTransport
     const TIMEOUT   = 5;
 
     private $sessionID;
+    private $clientID;
+    private $mostRecentOperationTransactionId;
 
+    /**
+     * Builds a transport object, by using the providden session ID if needed
+     * The class manages all communications with the server (login, CRUD list requests, account requests..)
+     * @param bool $session_id
+     * @throws WorkflowyException
+     */
     public function __construct($session_id = false)
     {
         if ($session_id !== false && (!is_string($session_id) || !preg_match('/^[a-z0-9]{32}$/', $session_id)))
@@ -29,19 +37,44 @@ class WorkflowyTransport
     }
 
     /**
-     * Makes an API request and returns the answer
-     * @param string $method
-     * @param array  $data
+     * Performs a list request
+     * @param string $action
+     * @param array $data
      * @throws WorkflowyException
      * @return array
      */
-    public function requestAPI($method, $data = array())
+    public function listRequest($action, $data)
+    {
+        if (!is_string($action) || !is_array($data))
+        {
+            throw new WorkflowyException('Invalid list request');
+        }
+        $this->apiRequest('push_and_poll', array(
+                'client_id'      => $this->clientID,
+                'client_version' => 14,
+                'push_poll_id'   => 'MSQBGpdw', // @todo make this dynamic
+                'push_poll_data' => json_encode(array((object)array(
+                    'most_recent_operation_transaction_id' => $this->mostRecentOperationTransactionId,
+                    'operations'                           => array((object)array('type' => $action, 'data' => (object)$data))
+                )))
+            )
+        );
+    }
+
+    /**
+     * Makes an API request and returns the answer
+     * @param string $method
+     * @param array $data
+     * @throws WorkflowyException
+     * @return array
+     */
+    public function apiRequest($method, $data = array())
     {
         if (empty($this->sessionID))
         {
             throw new WorkflowyException('A session ID is needed to make API calls');
         }
-        if (!is_string($method) || !preg_match('/^[a-zA-Z-_]{1,}$/', $method) || !is_array($data))
+        if (!is_string($method) || !is_array($data))
         {
             throw new WorkflowyException('Invalid API request');
         }
@@ -51,17 +84,26 @@ class WorkflowyTransport
         {
             throw new WorkflowyException('Could not decode JSON');
         }
+        if (!empty($json['projectTreeData']['mainProjectTreeInfo']['initialMostRecentOperationTransactionId']))
+        {
+            $this->mostRecentOperationTransactionId = $json['projectTreeData']['mainProjectTreeInfo']['initialMostRecentOperationTransactionId'];
+            $this->clientID                         = $json['projectTreeData']['clientId'];
+        }
+        if (!empty($json['results'][0]['new_most_recent_operation_transaction_id']))
+        {
+            $this->mostRecentOperationTransactionId = $json['results'][0]['new_most_recent_operation_transaction_id'];
+        }
         return $json;
     }
 
     /**
-     * Makes a login request and returns the resulting session ID
+     * Makes a login request and returns the session ID on success
      * @param string $username
      * @param string $password
      * @throws WorkflowyException
      * @return bool
      */
-    public function requestLogin($username, $password)
+    public function loginRequest($username, $password)
     {
         if (empty($username) || empty($password) || !is_string($username) || !is_string($password))
         {
@@ -75,8 +117,8 @@ class WorkflowyTransport
     /**
      * Sends a CURL request to the server, by using the given POST data
      * @param string $url
-     * @param array  $post_fields
-     * @param bool   $return_headers
+     * @param array $post_fields
+     * @param bool $return_headers
      * @throws WorkflowyException
      * @return array|string
      */

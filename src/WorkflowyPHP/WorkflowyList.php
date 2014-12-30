@@ -13,195 +13,70 @@ namespace WorkflowyPHP;
 class WorkflowyList
 {
 
-    private $id;
-    private $name;
-    private $complete;
-    private $description;
+    private $transport;
+    private $parents;
     private $sublists;
 
-    private $transport;
-
     /**
-     * Builds a recursive list
-     * @param array                $data
-     * @param array                $sublists
-     * @param   WorkflowyTransport $transport
-     * @internal param string $client_id
+     * Builds a Workflowy list
+     * The class holds the hierarchic relations between all its sublists (parents / children)
+     * @param string $session_id
      */
-    public function __construct($data, $sublists, $transport)
+    public function __construct($session_id)
     {
-        $this->id          = !empty($data['id']) ? $data['id'] : '';
-        $this->name        = !empty($data['name']) ? $data['name'] : '';
-        $this->description = !empty($data['description']) ? $data['description'] : '';
-        $this->complete    = !empty($data['complete']) && $data['complete'];
-        $this->sublists    = $sublists; // @todo check type
-        $this->transport   = $transport; // @todo check type
-    }
-
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    public function getDescription()
-    {
-        return $this->description;
-    }
-
-    public function getParent()
-    {
-        // @todo
-    }
-
-    public function isComplete()
-    {
-        // @todo
-    }
-
-    public function getOPML()
-    {
-        // @todo
+        $this->transport = new WorkflowyTransport($session_id);
     }
 
     /**
-     * Search recursively if the list has the requested name
-     * @todo allow regexps ?
-     * @todo return multiple results ?
-     * @param string $name
-     * @return bool|WorkflowyList
+     * Returns the main list
+     * @return WorkflowyList
      */
-    public function search($name)
+    public function getList()
     {
-        if (preg_match('/' . preg_quote($name, '/') . '/i', $this->name))
+        $data      = $this->transport->apiRequest('get_initialization_data');
+        $raw_lists = array();
+        if (!empty($data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren']))
         {
-            return $this;
+            $raw_lists = $data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren'];
         }
-        foreach ($this->sublists as $child)
+        $this->parents  = array();
+        $this->sublists = array();
+        return $this->parseList(array('id' => 'None', 'nm' => null, 'no' => null, 'cp' => null, 'ch' => $raw_lists), 'None');
+    }
+
+    /**
+     * Recursively parses the given list and builds an object
+     * @param array $raw_list
+     * @param string $parent_id
+     * @return WorkflowyList
+     */
+    private function parseList($raw_list, $parent_id)
+    {
+        $id           = !empty($raw_list['id']) ? $raw_list['id'] : '';
+        $name         = !empty($raw_list['nm']) ? $raw_list['nm'] : '';
+        $description  = !empty($raw_list['no']) ? $raw_list['no'] : '';
+        $complete     = !empty($raw_list['cp']);
+        $raw_sublists = !empty($raw_list['ch']) && is_array($raw_list['ch']) ? $raw_list['ch'] : array();
+        $sublists     = array();
+        foreach ($raw_sublists as $raw_sublist)
         {
-            $match = $child->search($name);
-            if ($match !== false)
-            {
-                return $match;
-            }
+            $sublists[] = $this->parseList($raw_sublist, $id);
         }
-        return false;
+        $sublist             = new WorkflowySublist($id, $name, $description, $complete, $sublists, $this, $this->transport);
+        $this->parents[$id]  = $parent_id;
+        $this->sublists[$id] = $sublist;
+        return $sublist;
     }
 
-    public function setName($name)
+    /**
+     * Tries to return the parent of the given sublist ID
+     * @param string $id
+     * @return bool
+     */
+    public function getSublistParent($id)
     {
-        // @todo
+        $parent_id = is_string($id) && !empty($this->parents[$id]) ? $this->parents[$id] : false;
+        return !empty($this->sublists[$parent_id]) ? $this->sublists[$parent_id] : false;
     }
-
-    public function setDescription($description)
-    {
-        // @todo
-    }
-
-    public function setParent($parent, $priority)
-    {
-        // @todo
-    }
-
-    public function setComplete($complete)
-    {
-        // @todo
-    }
-
-
-    /*
-
-    public function createList($name, $description, $priority)
-    {
-        // @todo
-        /*
-         (object)array(
-            'type' => 'create',
-            'data' => (object)array(
-                'projectid' => $generated_test_id,
-                'parentid'  => 'None',
-                'priority'  => 6
-            )
-        )
-        /!\ after created, launch edit()
-         *
-    }
-
-    /*
-     * Moves the list by setting a new parent and display priority
-     * @param WorkflowyList $parent_list
-     * @param int $priority
-     * @throws WorkflowyError
-     * @todo check answer
-     *
-    public function setPosition($parent_list, $priority)
-    {
-        if (empty($parent_list) || get_class($parent_list) !== __CLASS__)
-        {
-            throw new WorkflowyError('The method requires a ' . __CLASS__ . ' object');
-        }
-        $this->session->performListRequest('move', array(
-            'projectid' => $this->id,
-            'parentid'  => $parent_list->id(),
-            'priority'  => intval($priority)
-        ), $this->clientID);
-    }
-
-    /*
-     * Sets the list status (TRUE when its complete, FALSE otherwise)
-     * @param bool $complete
-     * @todo check answer
-     *
-    public function setComplete($complete = true)
-    {
-        $this->session->performListRequest($complete ? 'complete' : 'uncomplete', array(
-            'projectid' => $this->id
-        ), $this->clientID);
-    }
-
-    public function deleteList()
-    {
-        // @todo
-    }
-
-    /*
-     * Sets the list name
-     * @param string $name
-     * @todo check answer
-     *
-    public function setName($name)
-    {
-        $this->session->performListRequest('edit', array(
-            'projectid' => $this->id,
-            'name'      => $name
-        ), $this->clientID);
-    }
-
-    /*
-     * Sets the list description
-     * @param string $description
-     * @todo check answer
-     *
-    public function setDescription($description)
-    {
-        $this->session->performListRequest('edit', array(
-            'projectid'   => $this->id,
-            'description' => $description
-        ), $this->clientID);
-    }
-
-    public function getOPML()
-    {
-        // @todo
-    }
-
-    private function generateID()
-    {
-        //return((1+Math.random())*65536|0).toString(16).substring(1)
-        // k()+k()+" - "+k()+" - "+k()+" - "+k()+" - "+k()+k()+k()
-        return preg_replace_callback('#r#', function ()
-        {
-            return substr(base_convert((1 + ((float)rand() / (float)getrandmax())) * 65536 | 0, 10, 16), 1);
-        }, 'rr-r-r-r-rrr');
-    }*/
 
 }

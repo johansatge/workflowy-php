@@ -13,50 +13,91 @@ namespace WorkflowyPHP;
 class WorkflowyAccount
 {
 
-    public function __construct()
+    private $transport;
+    private $username;
+    private $theme;
+    private $email;
+    private $itemsCreatedInMonth;
+    private $monthlyQuota;
+    private $registrationDate;
+
+    /**
+     * Builds a Workflowy account
+     * The class holds the account informations associated to the given session
+     * @param string $session_id
+     */
+    public function __construct($session_id)
     {
-        // @todo
+        $this->transport = new WorkflowyTransport($session_id);
+        $data            = $this->transport->apiRequest('get_initialization_data');
+
+        $this->username            = !empty($data['settings']['username']) ? $data['settings']['username'] : '';
+        $this->theme               = !empty($data['settings']['theme']) ? $data['settings']['theme'] : '';
+        $this->email               = !empty($data['settings']['email']) ? $data['settings']['email'] : '';
+        $this->itemsCreatedInMonth = !empty($data['projectTreeData']['mainProjectTreeInfo']['itemsCreatedInCurrentMonth']) ? intval($data['projectTreeData']['mainProjectTreeInfo']['itemsCreatedInCurrentMonth']) : 0;
+        $this->monthlyQuota        = !empty($data['projectTreeData']['mainProjectTreeInfo']['monthlyItemQuota']) ? intval($data['projectTreeData']['mainProjectTreeInfo']['monthlyItemQuota']) : 0;
+        $this->registrationDate    = !empty($data['projectTreeData']['mainProjectTreeInfo']['dateJoinedTimestampInSeconds']) ? intval($data['projectTreeData']['mainProjectTreeInfo']['dateJoinedTimestampInSeconds']) : 0;
     }
 
+    /**
+     * Returns the username
+     * @return string
+     */
+    public function getUsername()
+    {
+        return $this->username;
+    }
+
+    /**
+     * Returns the email address
+     * @return string
+     */
     public function getEmail()
     {
-        // @todo
+        return $this->email;
     }
 
-    public function getRegistrationDate()
-    {
-        // @todo
-    }
-
+    /**
+     * Returns the current theme name
+     * @return string
+     */
     public function getTheme()
     {
-        // @todo
+        return $this->theme;
     }
 
-    public function getItemsCreatedInMmonth() // @todo move in the list class ?
+    /**
+     * Returns the number of items created on the current month
+     * @return int
+     */
+    public function getItemsCreatedInMmonth()
     {
-        // @todo
+        return $this->itemsCreatedInMonth;
     }
 
+    /**
+     * Gets the user monthly quota
+     * @return int
+     */
     public function getMonthlyQuota()
     {
-        // @todo
+        return $this->registrationDate;
     }
 
-    /*
-     * public function getAccount()
-    {
-    $data     = $this->request('get_initialization_data');
-    $settings = array(
-    'username'               => !empty($data['settings']['username']) ? $data['settings']['username'] : false,
-    'theme'                  => !empty($data['settings']['theme']) ? $data['settings']['theme'] : false,
-    'email'                  => !empty($data['settings']['email']) ? $data['settings']['email'] : false,
-    'items_created_in_month' => !empty($data['projectTreeData']['mainProjectTreeInfo']['itemsCreatedInCurrentMonth']) ? intval($data['projectTreeData']['mainProjectTreeInfo']['itemsCreatedInCurrentMonth']) : false,
-    'monthly_quota'          => !empty($data['projectTreeData']['mainProjectTreeInfo']['monthlyItemQuota']) ? intval($data['projectTreeData']['mainProjectTreeInfo']['monthlyItemQuota']) : false,
-    'registration_date'      => !empty($data['projectTreeData']['mainProjectTreeInfo']['dateJoinedTimestampInSeconds']) ? date('Y-m-d H:i:s', intval($data['projectTreeData']['mainProjectTreeInfo']['dateJoinedTimestampInSeconds'])) : false,
-    );
-    return $settings;
-    }
+    /**
+     * Gets the user registration date
+     * Takes a date format, or "timestamp" to get the raw value
+     * @param string $format
+     * @throws WorkflowyException
+     * @return string
      */
+    public function getRegistrationDate($format = 'Y-m-d H:i:s')
+    {
+        if (is_string($format) && !empty($format))
+        {
+            return $format == 'timestamp' ? $this->registrationDate : date($format, $this->registrationDate);
+        }
+        throw new WorkflowyException('Invalid date format');
+    }
 
 }

@@ -18,8 +18,8 @@ foreach ($classes as $path)
 
 use WorkflowyPHP\Workflowy;
 use WorkflowyPHP\WorkflowyException;
-use WorkflowyPHP\WorkflowyAccountRequest;
-use WorkflowyPHP\WorkflowyListRequest;
+use WorkflowyPHP\WorkflowyList;
+use WorkflowyPHP\WorkflowyAccount;
 
 /**
  * Session
@@ -27,14 +27,14 @@ use WorkflowyPHP\WorkflowyListRequest;
 
 if (!empty($_GET['sessionid']))
 {
-    $uniqid = $_GET['sessionid'];
+    $session_id = $_GET['sessionid'];
 }
 else
 {
     try
     {
-        $uniqid = Workflowy::login('workflowy1@yopmail.com', 'workflowy1');
-        s($uniqid);
+        $session_id = Workflowy::login('workflowy1@yopmail.com', 'workflowy1');
+        s($session_id);
     }
     catch (WorkflowyException $e)
     {
@@ -43,14 +43,29 @@ else
 }
 
 /**
+ * Account
+ */
+
+$account_request = new WorkflowyAccount($session_id);
+$account_request->getUsername();
+$account_request->getEmail();
+$account_request->getRegistrationDate();
+$account_request->getTheme();
+$account_request->getItemsCreatedInMmonth();
+$account_request->getMonthlyQuota();
+exit;
+
+/**
  * Lists
  */
 
-$list_request = new WorkflowyListRequest($uniqid);
+$list_request = new WorkflowyList($session_id);
 $list = $list_request->getList();
 
-$sublist = $list->search('test1');
+$sublist = $list->search('test1 sub2');
 
+s($sublist->getName());
+$sublist->setDescription(date('d-m-Y H:i:s'));
 
 /*
 
@@ -66,15 +81,4 @@ $sublist->setDescription('my description');
 $sublist->setParent($list, 2);
 $sublist->setComplete(true || false);
 
-/*
- * Account
- *
-
-$account_request = new WorkflowyAccountRequest($uniqid);
-
-$account_request->getEmail();
-$account_request->getRegistrationDate();
-$account_request->getTheme();
-$account_request->getItemsCreatedInMmonth();
-$account_request->getMonthlyQuota();
 */
