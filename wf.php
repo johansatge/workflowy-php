@@ -58,9 +58,10 @@ exit;
 $list_request = new WorkflowyList($session_id);
 $list = $list_request->getList();
 
-$sublist = $list->search('/#tag1/i');
-var_dump($sublist->getName());
-$sublist->setDescription(date('d-m-Y H:i:s'));
+$sublist = $list->searchSublist('#test3#');
+
+echo $list->getOPML() . "\n\n\n";
+echo($sublist->getOPML());
 
 
 /*
@@ -71,7 +72,8 @@ $sublist->getDescription();
 $sublist->getParent();
 $sublist->isComplete();
 $sublist->getOPML();
-$sublist->$list->search('my sub-sub-list');
+$sublist->getSublists();
+$sublist->searchSublist();
 
 $sublist->setName('my sublist');
 $sublist->setDescription('my description');

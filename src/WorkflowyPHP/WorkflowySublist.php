@@ -21,12 +21,12 @@ class WorkflowySublist
      * This class is used to read a list content or update it
      * /!\ Keep in mind than on update, the list content will not be impacted
      *     For instance, when modyfing the description, the getDescription method will still return the old value
-     * @param string             $id
-     * @param string             $name
-     * @param string             $description
-     * @param bool               $complete
-     * @param array              $sublists
-     * @param WorkflowyList      $list
+     * @param string $id
+     * @param string $name
+     * @param string $description
+     * @param bool $complete
+     * @param array $sublists
+     * @param WorkflowyList $list
      * @param WorkflowyTransport $transport
      * @throws WorkflowyException
      */
@@ -111,19 +111,28 @@ class WorkflowySublist
      */
     public function getOPML()
     {
-        $opml = new WorkflowyOPML($this);
-        return $opml->export();
+        $exporter = new WorkflowyOPML($this);
+        return $exporter->export();
+    }
+
+    /**
+     * Returns an array of sublists
+     * @return array
+     */
+    public function getSublists()
+    {
+        return $this->sublists;
     }
 
     /**
      * Search recursively if the list name matches the given expression
      * Returns the first match, or an array of matches if the $get_all parameter is set to true
      * @param string $expression
-     * @param bool   $get_all
+     * @param bool $get_all
      * @throws WorkflowyException
      * @return bool|WorkflowyList
      */
-    public function search($expression, $get_all = false)
+    public function searchSublist($expression, $get_all = false)
     {
         if (!is_string($expression) || preg_match($expression, null) === false)
         {
@@ -141,12 +150,15 @@ class WorkflowySublist
         }
         foreach ($this->sublists as $child)
         {
-            $match = $child->search($expression, $get_all);
+            $match = $child->searchSublist($expression, $get_all);
             if ($match !== false && !$get_all)
             {
                 return $match;
             }
-            $matches = array_merge($matches, $match);
+            if ($get_all)
+            {
+                $matches = array_merge($matches, $match);
+            }
         }
         return $get_all ? $matches : false;;
     }
@@ -196,7 +208,7 @@ class WorkflowySublist
     /**
      * Sets the parent and priority of the list
      * @param WorkflowySublist $parent_sublist
-     * @param int              $priority
+     * @param int $priority
      * @throws WorkflowyException
      */
     public function setParent($parent_sublist, $priority)

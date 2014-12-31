@@ -24,7 +24,7 @@ class WorkflowyList
 
     /**
      * Returns the main list
-     * @return WorkflowyList
+     * @return WorkflowySublist
      */
     public function getList()
     {
@@ -36,7 +36,7 @@ class WorkflowyList
         }
         $this->parents  = array();
         $this->sublists = array();
-        return $this->parseList(array('id' => 'None', 'nm' => null, 'no' => null, 'cp' => null, 'ch' => $raw_lists), 'None');
+        return $this->parseList(array('id' => 'None', 'nm' => null, 'no' => null, 'cp' => null, 'ch' => $raw_lists), false);
     }
 
     /**
@@ -57,8 +57,11 @@ class WorkflowyList
         {
             $sublists[] = $this->parseList($raw_sublist, $id);
         }
-        $sublist             = new WorkflowySublist($id, $name, $description, $complete, $sublists, $this, $this->transport);
-        $this->parents[$id]  = $parent_id;
+        $sublist = new WorkflowySublist($id, $name, $description, $complete, $sublists, $this, $this->transport);
+        if (!empty($parent_id))
+        {
+            $this->parents[$id] = $parent_id;
+        }
         $this->sublists[$id] = $sublist;
         return $sublist;
     }

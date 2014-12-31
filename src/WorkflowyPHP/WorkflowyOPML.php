@@ -25,26 +25,78 @@ class WorkflowyOPML
 
     /**
      * Exports the given list
+     * @param int $depth
      * @return string
      */
-    public function export()
+    public function export($depth = 0)
     {
-        // @todo
-        /*
-        <?xml version="1.0"?>
-        <opml version="2.0">
-            <head>
-                <ownerEmail>workflowy1@yopmail.com</ownerEmail>
-            </head>
-            <body>
-                <outline text="test avec sub" _note="Description: 17-12-2014 11:33:12">
-                    <outline text="test2 sub1" >
-                        <outline text="test2 sub1 sub1" _note="23-12-2014 17:00:50" />
-                    </outline>
-                    <outline _complete="true" text="test2 sub2 complete" /></outline>
-            </body>
-        </opml>
-        */
+        $depth = intval($depth);
+        return $this->getHeader($depth) . $this->getBody($depth) . $this->getFooter($depth);
+    }
+
+    /**
+     * Gets the OPML header
+     * @param int $depth
+     * @return string
+     */
+    private function getHeader($depth)
+    {
+        $opml = '';
+        if ($depth == 0)
+        {
+            $opml .= '<?xml version="1.0"?>' . "\n" . '<opml version="2.0">' . "\n" . '<head>' . "\n" . '<ownerEmail>@todo</ownerEmail>' . "\n" . '</head>' . "\n" . '<body>' . "\n";
+        }
+        if ($this->sublist->getParent() !== false)
+        {
+            $tag = '<outline%s text="%s" _note="%s"' . (count($this->sublist->getSublists()) == 0 ? ' />' : '>') . "\n";
+            $opml .= sprintf($tag, $this->sublist->isComplete() ? ' _complete="true"' : '', $this->esc($this->sublist->getName()), $this->esc($this->sublist->getDescription()));
+        }
+        return $opml;
+    }
+
+    /**
+     * Gets the OPML body
+     * @param int $depth
+     * @return string
+     */
+    private function getBody($depth)
+    {
+        $opml = '';
+        foreach ($this->sublist->getSublists() as $sublist)
+        {
+            $exporter = new WorkflowyOPML($sublist);
+            $opml .= $exporter->export($depth + 1);
+        }
+        return $opml;
+    }
+
+    /**
+     * Gets the OPML footer
+     * @param int $depth
+     * @return string
+     */
+    private function getFooter($depth)
+    {
+        $opml = '';
+        if ($this->sublist->getParent() !== false)
+        {
+            $opml .= count($this->sublist->getSublists()) > 0 ? '</outline>' . "\n" : '';
+        }
+        if ($depth == 0)
+        {
+            $opml .= '</body>' . "\n" . '</opml>';
+        }
+        return $opml;
+    }
+
+    /**
+     * Escapes the given string
+     * @param string $string
+     * @return string
+     */
+    private function esc($string)
+    {
+        return str_replace('"', '\"', stripslashes($string));
     }
 
 }
