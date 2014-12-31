@@ -33,7 +33,7 @@ class WorkflowyTransport
     /**
      * Performs a list request
      * @param string $action
-     * @param array  $data
+     * @param array $data
      * @throws WorkflowyException
      * @return array
      */
@@ -57,7 +57,7 @@ class WorkflowyTransport
     /**
      * Makes an API request and returns the answer
      * @param string $method
-     * @param array  $data
+     * @param array $data
      * @throws WorkflowyException
      * @return array
      */
@@ -86,6 +86,10 @@ class WorkflowyTransport
         {
             $this->mostRecentOperationTransactionId = $json['results'][0]['new_most_recent_operation_transaction_id'];
         }
+        if (!empty($json['results'][0]['error']))
+        {
+            throw new WorkflowyException('An error occurred when executing the API request');
+        }
         return $json;
     }
 
@@ -110,8 +114,8 @@ class WorkflowyTransport
     /**
      * Sends a CURL request to the server, by using the given POST data
      * @param string $url
-     * @param array  $post_fields
-     * @param bool   $return_headers
+     * @param array $post_fields
+     * @param bool $return_headers
      * @throws WorkflowyException
      * @return array|string
      */
