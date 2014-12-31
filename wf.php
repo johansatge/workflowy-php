@@ -60,8 +60,7 @@ $list = $list_request->getList();
 
 $sublist = $list->searchSublist('#test3#');
 
-echo $list->getOPML() . "\n\n\n";
-echo($sublist->getOPML());
+$sublist->createSublist('creation test', date('m-d-Y H:i:s'), 999);
 
 
 /*
