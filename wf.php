@@ -78,5 +78,6 @@ $sublist->setName('my sublist');
 $sublist->setDescription('my description');
 $sublist->setParent($list, 2);
 $sublist->setComplete(true || false);
+$sublist->createSublist('My list name', 'My list description', 999);
 
 */

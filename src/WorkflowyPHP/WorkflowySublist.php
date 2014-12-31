@@ -242,7 +242,7 @@ class WorkflowySublist
      */
     public function createSublist($name, $description, $priority)
     {
-        if (!is_string($name) || !is_string($description))
+        if ((!empty($name) && !is_string($name)) || (!empty($description) && !is_string($description)))
         {
             throw new WorkflowyException('Name and description must be strings');
         }
@@ -252,8 +252,14 @@ class WorkflowySublist
             'parentid'  => $this->id,
             'priority'  => intval($priority)
         ));
-        $this->transport->listRequest('edit', array('projectid' => $new_id, 'name' => $name));
-        $this->transport->listRequest('edit', array('projectid' => $new_id, 'description' => $description));
+        if (!empty($name))
+        {
+            $this->transport->listRequest('edit', array('projectid' => $new_id, 'name' => $name));
+        }
+        if (!empty($description))
+        {
+            $this->transport->listRequest('edit', array('projectid' => $new_id, 'description' => $description));
+        }
     }
 
     private function generateID()
