@@ -4,6 +4,7 @@
 date_default_timezone_set('Europe/Paris');
 
 require_once 'vendor/autoload.php';
+//require_once 'src/autoload.php';
 
 /**
  * Sample usage
