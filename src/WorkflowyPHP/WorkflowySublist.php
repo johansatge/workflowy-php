@@ -130,7 +130,7 @@ class WorkflowySublist
      * @param string $expression
      * @param bool $get_all
      * @throws WorkflowyException
-     * @return bool|WorkflowyList
+     * @return bool|WorkflowySublist
      */
     public function searchSublist($expression, $get_all = false)
     {
@@ -160,7 +160,7 @@ class WorkflowySublist
                 $matches = array_merge($matches, $match);
             }
         }
-        return $get_all ? $matches : false;;
+        return $get_all ? $matches : false;
     }
 
     /**
@@ -233,20 +233,27 @@ class WorkflowySublist
         $this->transport->listRequest('delete', array('projectid' => $this->id));
     }
 
-    public function createSublist()
+    /**
+     * Creates a sublist
+     * @param string $name
+     * @param string $description
+     * @param int $priority
+     * @throws WorkflowyException
+     */
+    public function createSublist($name, $description, $priority)
     {
-        // @todo
-        /*
-             (object)array(
-                'type' => 'create',
-                'data' => (object)array(
-                    'projectid' => $generated_test_id,
-                    'parentid'  => 'None',
-                    'priority'  => 6
-                )
-            )
-            /!\ after created, launch edit()
-        }*/
+        if (!is_string($name) || !is_string($description))
+        {
+            throw new WorkflowyException('Name and description must be strings');
+        }
+        $new_id = $this->generateID();
+        $this->transport->listRequest('create', array(
+            'projectid' => $new_id,
+            'parentid'  => $this->id,
+            'priority'  => intval($priority)
+        ));
+        $this->transport->listRequest('edit', array('projectid' => $new_id, 'name' => $name));
+        $this->transport->listRequest('edit', array('projectid' => $new_id, 'description' => $description));
     }
 
     private function generateID()
