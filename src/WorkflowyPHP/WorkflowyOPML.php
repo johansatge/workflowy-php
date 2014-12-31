@@ -44,7 +44,7 @@ class WorkflowyOPML
         $opml = '';
         if ($depth == 0)
         {
-            $opml .= '<?xml version="1.0"?>' . "\n" . '<opml version="2.0">' . "\n" . '<head>' . "\n" . '<ownerEmail>@todo</ownerEmail>' . "\n" . '</head>' . "\n" . '<body>' . "\n";
+            $opml .= '<?xml version="1.0"?>' . "\n" . '<opml version="2.0">' . "\n" . '<head>' . "\n" . '<ownerEmail></ownerEmail>' . "\n" . '</head>' . "\n" . '<body>' . "\n";
         }
         if ($this->sublist->getParent() !== false)
         {
