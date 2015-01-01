@@ -4,9 +4,6 @@
 
 namespace WorkFlowyPHP;
 
-use WorkFlowyPHP\WorkFlowyException;
-use WorkFlowyPHP\WorkFlowySession;
-
 class WorkFlowy
 {
 
