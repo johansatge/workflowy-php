@@ -21,12 +21,12 @@ class WorkFlowySublist
      * This class is used to read a list content or update it
      * /!\ Keep in mind than on update, the list content will not be impacted
      *     For instance, when modyfing the description, the getDescription method will still return the old value
-     * @param string $id
-     * @param string $name
-     * @param string $description
-     * @param bool $complete
-     * @param array $sublists
-     * @param WorkFlowyList $list
+     * @param string             $id
+     * @param string             $name
+     * @param string             $description
+     * @param bool               $complete
+     * @param array              $sublists
+     * @param WorkFlowyList      $list
      * @param WorkFlowyTransport $transport
      * @throws WorkFlowyException
      */
@@ -126,19 +126,18 @@ class WorkFlowySublist
 
     /**
      * Search recursively if the list name matches the given expression
-     * Returns the first match, or an array of matches if the $get_all parameter is set to true
      * @param string $expression
-     * @param bool $get_all
+     * @param array  $params
      * @throws WorkFlowyException
      * @return bool|WorkFlowySublist
      */
-    public function searchSublist($expression, $get_all = false)
+    public function searchSublist($expression, $params = array())
     {
         if (!is_string($expression) || preg_match($expression, null) === false)
         {
             throw new WorkFlowyException('Search expression must be a valid regular expression');
         }
-        $get_all = $get_all ? true : false;
+        $get_all = is_array($params) && !empty($params['get_all']) && $params['get_all'] ? true : false;
         $matches = array();
         if (preg_match($expression, $this->name))
         {
@@ -208,7 +207,7 @@ class WorkFlowySublist
     /**
      * Sets the parent and priority of the list
      * @param WorkFlowySublist $parent_sublist
-     * @param int $priority
+     * @param int              $priority
      * @throws WorkFlowyException
      */
     public function setParent($parent_sublist, $priority)
@@ -237,7 +236,7 @@ class WorkFlowySublist
      * Creates a sublist
      * @param string $name
      * @param string $description
-     * @param int $priority
+     * @param int    $priority
      * @throws WorkFlowyException
      */
     public function createSublist($name, $description, $priority)
