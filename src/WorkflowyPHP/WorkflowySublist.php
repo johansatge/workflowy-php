@@ -1,10 +1,10 @@
 <?php
 
-/* WorkflowyPHP - https://github.com/johansatge/workflowy-php */
+/* WorkFlowyPHP - https://github.com/johansatge/workflowy-php */
 
-namespace WorkflowyPHP;
+namespace WorkFlowyPHP;
 
-class WorkflowySublist
+class WorkFlowySublist
 {
 
     private $id;
@@ -26,9 +26,9 @@ class WorkflowySublist
      * @param string $description
      * @param bool $complete
      * @param array $sublists
-     * @param WorkflowyList $list
-     * @param WorkflowyTransport $transport
-     * @throws WorkflowyException
+     * @param WorkFlowyList $list
+     * @param WorkFlowyTransport $transport
+     * @throws WorkFlowyException
      */
     public function __construct($id, $name, $description, $complete, $sublists, $list, $transport)
     {
@@ -41,21 +41,21 @@ class WorkflowySublist
         {
             foreach ($sublists as $sublist)
             {
-                if (!is_a($sublist, '\WorkflowyPHP\WorkflowySublist'))
+                if (!is_a($sublist, '\WorkFlowyPHP\WorkFlowySublist'))
                 {
-                    throw new WorkflowyException('Sublists must be WorkflowySublist instances');
+                    throw new WorkFlowyException('Sublists must be WorkFlowySublist instances');
                 }
                 $this->sublists[] = $sublist;
             }
         }
-        if (!is_a($list, '\WorkflowyPHP\WorkflowyList'))
+        if (!is_a($list, '\WorkFlowyPHP\WorkFlowyList'))
         {
-            throw new WorkflowyException('List must be a WorkflowyList instance');
+            throw new WorkFlowyException('List must be a WorkFlowyList instance');
         }
         $this->list = $list;
-        if (!is_a($transport, '\WorkflowyPHP\WorkflowyTransport'))
+        if (!is_a($transport, '\WorkFlowyPHP\WorkFlowyTransport'))
         {
-            throw new WorkflowyException('Transport must be a WorkflowyTransport instance');
+            throw new WorkFlowyException('Transport must be a WorkFlowyTransport instance');
         }
         $this->transport = $transport;
     }
@@ -89,7 +89,7 @@ class WorkflowySublist
 
     /**
      * Returns the parent of the list
-     * @return bool|WorkflowySublist
+     * @return bool|WorkFlowySublist
      */
     public function getParent()
     {
@@ -111,7 +111,7 @@ class WorkflowySublist
      */
     public function getOPML()
     {
-        $exporter = new WorkflowyOPML($this);
+        $exporter = new WorkFlowyOPML($this);
         return $exporter->export();
     }
 
@@ -129,14 +129,14 @@ class WorkflowySublist
      * Returns the first match, or an array of matches if the $get_all parameter is set to true
      * @param string $expression
      * @param bool $get_all
-     * @throws WorkflowyException
-     * @return bool|WorkflowySublist
+     * @throws WorkFlowyException
+     * @return bool|WorkFlowySublist
      */
     public function searchSublist($expression, $get_all = false)
     {
         if (!is_string($expression) || preg_match($expression, null) === false)
         {
-            throw new WorkflowyException('Search expression must be a valid regular expression');
+            throw new WorkFlowyException('Search expression must be a valid regular expression');
         }
         $get_all = $get_all ? true : false;
         $matches = array();
@@ -166,13 +166,13 @@ class WorkflowySublist
     /**
      * Sets the list name
      * @param string $name
-     * @throws WorkflowyException
+     * @throws WorkFlowyException
      */
     public function setName($name)
     {
         if (!is_string($name))
         {
-            throw new WorkflowyException('Name must be a string');
+            throw new WorkFlowyException('Name must be a string');
         }
         $this->transport->listRequest('edit', array('projectid' => $this->id, 'name' => $name));
     }
@@ -180,13 +180,13 @@ class WorkflowySublist
     /**
      * Sets the list description
      * @param string $description
-     * @throws WorkflowyException
+     * @throws WorkFlowyException
      */
     public function setDescription($description)
     {
         if (!is_string($description))
         {
-            throw new WorkflowyException('Description must be a string');
+            throw new WorkFlowyException('Description must be a string');
         }
         $this->transport->listRequest('edit', array('projectid' => $this->id, 'description' => $description));
     }
@@ -194,28 +194,28 @@ class WorkflowySublist
     /**
      * Sets the list completion status
      * @param bool $complete
-     * @throws WorkflowyException
+     * @throws WorkFlowyException
      */
     public function setComplete($complete)
     {
         if (!is_bool($complete))
         {
-            throw new WorkflowyException('Completion status must be boolean');
+            throw new WorkFlowyException('Completion status must be boolean');
         }
         $this->transport->listRequest(($complete ? 'complete' : 'uncomplete'), array('projectid' => $this->id));
     }
 
     /**
      * Sets the parent and priority of the list
-     * @param WorkflowySublist $parent_sublist
+     * @param WorkFlowySublist $parent_sublist
      * @param int $priority
-     * @throws WorkflowyException
+     * @throws WorkFlowyException
      */
     public function setParent($parent_sublist, $priority)
     {
         if (empty($parent_sublist) || !is_a($parent_sublist, __CLASS__))
         {
-            throw new WorkflowyException('Parent sublist must be a ' . __CLASS__ . ' instance');
+            throw new WorkFlowyException('Parent sublist must be a ' . __CLASS__ . ' instance');
         }
         $this->transport->listRequest('move', array(
             'projectid' => $this->id,
@@ -238,13 +238,13 @@ class WorkflowySublist
      * @param string $name
      * @param string $description
      * @param int $priority
-     * @throws WorkflowyException
+     * @throws WorkFlowyException
      */
     public function createSublist($name, $description, $priority)
     {
         if ((!empty($name) && !is_string($name)) || (!empty($description) && !is_string($description)))
         {
-            throw new WorkflowyException('Name and description must be strings');
+            throw new WorkFlowyException('Name and description must be strings');
         }
         $new_id = $this->generateID();
         $this->transport->listRequest('create', array(

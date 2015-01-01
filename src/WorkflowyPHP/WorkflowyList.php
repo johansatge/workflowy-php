@@ -1,10 +1,10 @@
 <?php
 
-/* WorkflowyPHP - https://github.com/johansatge/workflowy-php */
+/* WorkFlowyPHP - https://github.com/johansatge/workflowy-php */
 
-namespace WorkflowyPHP;
+namespace WorkFlowyPHP;
 
-class WorkflowyList
+class WorkFlowyList
 {
 
     private $transport;
@@ -12,19 +12,19 @@ class WorkflowyList
     private $sublists;
 
     /**
-     * Builds a Workflowy list
+     * Builds a WorkFlowy list
      * The class holds the hierarchic relations between all its sublists (parents / children)
      * @param string $session_id
-     * @throws WorkflowyException
+     * @throws WorkFlowyException
      */
     public function __construct($session_id)
     {
-        $this->transport = new WorkflowyTransport($session_id);
+        $this->transport = new WorkFlowyTransport($session_id);
     }
 
     /**
      * Returns the main list
-     * @return WorkflowySublist
+     * @return WorkFlowySublist
      */
     public function getList()
     {
@@ -43,7 +43,7 @@ class WorkflowyList
      * Recursively parses the given list and builds an object
      * @param array $raw_list
      * @param string $parent_id
-     * @return WorkflowyList
+     * @return WorkFlowyList
      */
     private function parseList($raw_list, $parent_id)
     {
@@ -57,7 +57,7 @@ class WorkflowyList
         {
             $sublists[] = $this->parseList($raw_sublist, $id);
         }
-        $sublist = new WorkflowySublist($id, $name, $description, $complete, $sublists, $this, $this->transport);
+        $sublist = new WorkFlowySublist($id, $name, $description, $complete, $sublists, $this, $this->transport);
         if (!empty($parent_id))
         {
             $this->parents[$id] = $parent_id;

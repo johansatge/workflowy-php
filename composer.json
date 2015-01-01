@@ -1,6 +1,6 @@
 {
     "name": "johansatge/workflowy-php",
-    "description": "An unofficial Workflowy API",
+    "description": "An unofficial WorkFlowy API",
     "version": "0.1",
     "minimum-stability": "beta",
     "type": "library",
@@ -26,10 +26,10 @@
     "require-dev": {},
     "autoload": {
         "psr-4": {
-            "WorkflowyPHP\\": "src/"
+            "WorkFlowyPHP\\": "src/"
         },
         "psr-0": {
-            "WorkflowyPHP": "src/"
+            "WorkFlowyPHP": "src/"
         },
         "classmap": [],
         "files": []

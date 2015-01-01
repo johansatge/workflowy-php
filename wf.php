@@ -10,10 +10,10 @@ require_once 'vendor/autoload.php';
  * Sample usage
  */
 
-use WorkflowyPHP\Workflowy;
-use WorkflowyPHP\WorkflowyException;
-use WorkflowyPHP\WorkflowyList;
-use WorkflowyPHP\WorkflowyAccount;
+use WorkFlowyPHP\WorkFlowy;
+use WorkFlowyPHP\WorkFlowyException;
+use WorkFlowyPHP\WorkFlowyList;
+use WorkFlowyPHP\WorkFlowyAccount;
 
 /**
  * Session
@@ -27,10 +27,10 @@ else
 {
     try
     {
-        $session_id = Workflowy::login('workflowy1@yopmail.com', 'workflowy1');
+        $session_id = WorkFlowy::login('workflowy1@yopmail.com', 'workflowy1');
         var_dump($session_id);
     }
-    catch (WorkflowyException $e)
+    catch (WorkFlowyException $e)
     {
         var_dump($e->getMessage());
     }
@@ -41,7 +41,7 @@ else
  */
 
 /*
-$account_request = new WorkflowyAccount($session_id);
+$account_request = new WorkFlowyAccount($session_id);
 var_dump($account_request->getUsername());
 var_dump($account_request->getEmail());
 var_dump($account_request->getRegistrationDate());
@@ -55,7 +55,7 @@ exit;
  * Lists
  */
 
-$list_request = new WorkflowyList($session_id);
+$list_request = new WorkFlowyList($session_id);
 $list = $list_request->getList();
 
 $sublist = $list->searchSublist('#test3#');

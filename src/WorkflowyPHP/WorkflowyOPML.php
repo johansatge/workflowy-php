@@ -1,24 +1,24 @@
 <?php
 
-/* WorkflowyPHP - https://github.com/johansatge/workflowy-php */
+/* WorkFlowyPHP - https://github.com/johansatge/workflowy-php */
 
-namespace WorkflowyPHP;
+namespace WorkFlowyPHP;
 
-class WorkflowyOPML
+class WorkFlowyOPML
 {
 
     private $sublist;
 
     /**
      * Builds an OPML exporter by using the given list
-     * @param WorkflowySublist $sublist
-     * @throws WorkflowyException
+     * @param WorkFlowySublist $sublist
+     * @throws WorkFlowyException
      */
     public function __construct($sublist)
     {
-        if (!is_a($sublist, '\WorkflowyPHP\WorkflowySublist'))
+        if (!is_a($sublist, '\WorkFlowyPHP\WorkFlowySublist'))
         {
-            throw new WorkflowyException('Sublist must be a WorkflowySublist instance');
+            throw new WorkFlowyException('Sublist must be a WorkFlowySublist instance');
         }
         $this->sublist = $sublist;
     }
@@ -64,7 +64,7 @@ class WorkflowyOPML
         $opml = '';
         foreach ($this->sublist->getSublists() as $sublist)
         {
-            $exporter = new WorkflowyOPML($sublist);
+            $exporter = new WorkFlowyOPML($sublist);
             $opml .= $exporter->export($depth + 1);
         }
         return $opml;

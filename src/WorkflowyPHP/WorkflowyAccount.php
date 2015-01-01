@@ -1,10 +1,10 @@
 <?php
 
-/* WorkflowyPHP - https://github.com/johansatge/workflowy-php */
+/* WorkFlowyPHP - https://github.com/johansatge/workflowy-php */
 
-namespace WorkflowyPHP;
+namespace WorkFlowyPHP;
 
-class WorkflowyAccount
+class WorkFlowyAccount
 {
 
     private $transport;
@@ -16,14 +16,14 @@ class WorkflowyAccount
     private $registrationDate;
 
     /**
-     * Builds a Workflowy account
+     * Builds a WorkFlowy account
      * The class holds the account informations associated to the given session
      * @param string $session_id
-     * @throws WorkflowyException
+     * @throws WorkFlowyException
      */
     public function __construct($session_id)
     {
-        $this->transport           = new WorkflowyTransport($session_id);
+        $this->transport           = new WorkFlowyTransport($session_id);
         $data                      = $this->transport->apiRequest('get_initialization_data');
         $this->username            = !empty($data['settings']['username']) ? $data['settings']['username'] : '';
         $this->theme               = !empty($data['settings']['theme']) ? $data['settings']['theme'] : '';
@@ -82,7 +82,7 @@ class WorkflowyAccount
      * Gets the user registration date
      * Takes a date format, or "timestamp" to get the raw value
      * @param string $format
-     * @throws WorkflowyException
+     * @throws WorkFlowyException
      * @return string
      */
     public function getRegistrationDate($format = 'Y-m-d H:i:s')
@@ -91,7 +91,7 @@ class WorkflowyAccount
         {
             return $format == 'timestamp' ? $this->registrationDate : date($format, $this->registrationDate);
         }
-        throw new WorkflowyException('Invalid date format');
+        throw new WorkFlowyException('Invalid date format');
     }
 
 }

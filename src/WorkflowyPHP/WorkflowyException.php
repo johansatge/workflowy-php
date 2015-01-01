@@ -1,17 +1,17 @@
 <?php
 
-/* WorkflowyPHP - https://github.com/johansatge/workflowy-php */
+/* WorkFlowyPHP - https://github.com/johansatge/workflowy-php */
 
-namespace WorkflowyPHP;
+namespace WorkFlowyPHP;
 
-class WorkflowyException extends \Exception
+class WorkFlowyException extends \Exception
 {
 
     protected $message;
     protected $code;
 
     /**
-     * Builds a custom Workflowy exception
+     * Builds a custom WorkFlowy exception
      * For now, uses the \Exception behavior
      * @param string $message
      * @param int    $code

@@ -1,10 +1,10 @@
 <?php
 
-/* WorkflowyPHP - https://github.com/johansatge/workflowy-php */
+/* WorkFlowyPHP - https://github.com/johansatge/workflowy-php */
 
-namespace WorkflowyPHP;
+namespace WorkFlowyPHP;
 
-class WorkflowyTransport
+class WorkFlowyTransport
 {
 
     const LOGIN_URL = 'https://workflowy.com/accounts/login/';
@@ -19,13 +19,13 @@ class WorkflowyTransport
      * Builds a transport object, by using the providden session ID if needed
      * The class manages all communications with the server (login, CRUD list requests, account requests..)
      * @param bool $session_id
-     * @throws WorkflowyException
+     * @throws WorkFlowyException
      */
     public function __construct($session_id = false)
     {
         if ($session_id !== false && (!is_string($session_id) || !preg_match('/^[a-z0-9]{32}$/', $session_id)))
         {
-            throw new WorkflowyException('Invalid session ID');
+            throw new WorkFlowyException('Invalid session ID');
         }
         $this->sessionID = $session_id;
     }
@@ -34,14 +34,14 @@ class WorkflowyTransport
      * Performs a list request
      * @param string $action
      * @param array $data
-     * @throws WorkflowyException
+     * @throws WorkFlowyException
      * @return array
      */
     public function listRequest($action, $data)
     {
         if (!is_string($action) || !is_array($data))
         {
-            throw new WorkflowyException('Invalid list request');
+            throw new WorkFlowyException('Invalid list request');
         }
         $this->apiRequest('push_and_poll', array(
             'client_id'      => $this->clientID,
@@ -58,24 +58,24 @@ class WorkflowyTransport
      * Makes an API request and returns the answer
      * @param string $method
      * @param array $data
-     * @throws WorkflowyException
+     * @throws WorkFlowyException
      * @return array
      */
     public function apiRequest($method, $data = array())
     {
         if (empty($this->sessionID))
         {
-            throw new WorkflowyException('A session ID is needed to make API calls');
+            throw new WorkFlowyException('A session ID is needed to make API calls');
         }
         if (!is_string($method) || !is_array($data))
         {
-            throw new WorkflowyException('Invalid API request');
+            throw new WorkFlowyException('Invalid API request');
         }
         $raw_data = $this->curl(sprintf(self::API_URL, $method), $data, false);
         $json     = json_decode($raw_data, true);
         if ($json === null)
         {
-            throw new WorkflowyException('Could not decode JSON');
+            throw new WorkFlowyException('Could not decode JSON');
         }
         if (!empty($json['projectTreeData']['mainProjectTreeInfo']['initialMostRecentOperationTransactionId']))
         {
@@ -88,7 +88,7 @@ class WorkflowyTransport
         }
         if (!empty($json['results'][0]['error']))
         {
-            throw new WorkflowyException('An error occurred when executing the API request');
+            throw new WorkFlowyException('An error occurred when executing the API request');
         }
         return $json;
     }
@@ -97,14 +97,14 @@ class WorkflowyTransport
      * Makes a login request and returns the session ID on success
      * @param string $username
      * @param string $password
-     * @throws WorkflowyException
+     * @throws WorkFlowyException
      * @return bool
      */
     public function loginRequest($username, $password)
     {
         if (empty($username) || empty($password) || !is_string($username) || !is_string($password))
         {
-            throw new WorkflowyException('You must provide credentials as strings');
+            throw new WorkFlowyException('You must provide credentials as strings');
         }
         $raw_data = $this->curl(self::LOGIN_URL, array('username' => $username, 'password' => $password, 'next' => ''), true);
         preg_match('#^Set-Cookie:\s*sessionid=([^;]*)#mi', $raw_data, $session_id_match);
@@ -116,7 +116,7 @@ class WorkflowyTransport
      * @param string $url
      * @param array $post_fields
      * @param bool $return_headers
-     * @throws WorkflowyException
+     * @throws WorkFlowyException
      * @return array|string
      */
     private function curl($url, $post_fields, $return_headers)
@@ -141,7 +141,7 @@ class WorkflowyTransport
         curl_close($ch);
         if (!empty($error))
         {
-            throw new WorkflowyException($error);
+            throw new WorkFlowyException($error);
         }
         return $raw_data;
     }

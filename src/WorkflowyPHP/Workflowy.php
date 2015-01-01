@@ -1,31 +1,31 @@
 <?php
 
-/* WorkflowyPHP - https://github.com/johansatge/workflowy-php */
+/* WorkFlowyPHP - https://github.com/johansatge/workflowy-php */
 
-namespace WorkflowyPHP;
+namespace WorkFlowyPHP;
 
-use WorkflowyPHP\WorkflowyException;
-use WorkflowyPHP\WorkflowySession;
+use WorkFlowyPHP\WorkFlowyException;
+use WorkFlowyPHP\WorkFlowySession;
 
-class Workflowy
+class WorkFlowy
 {
 
     /**
      * Tries to login using the given credentials
      * @param string $username
      * @param string $password
-     * @throws WorkflowyException
+     * @throws WorkFlowyException
      * @return string
      */
     public static function login($username, $password)
     {
-        $transport = new WorkflowyTransport();
+        $transport = new WorkFlowyTransport();
         $answer    = $transport->loginRequest($username, $password);
         if ($answer !== false)
         {
             return $answer;
         }
-        throw new WorkflowyException('Could not open the session with those credentials');
+        throw new WorkFlowyException('Could not open the session with those credentials');
     }
 
 }
