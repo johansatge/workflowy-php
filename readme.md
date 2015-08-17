@@ -167,50 +167,16 @@ $sublist->createSublist('My sublist name', 'My sublist description', 9);
 
 ### Account API
 
-Gets an account object (returns `WorkFlowyAccount`)
-
-```php
-$account_request = new WorkFlowyAccount($session_id);
-```
-
-Gets his username (returns `string`)
-
-```php
-$account_request->getUsername();
-```
-
-Gets his email address (returns `string`)
-
-```php
-$account_request->getEmail();
-```
-
-Gets his registration date (returns `string`)
-
-```php
-$format = 'd-m-Y';
-$account_request->getRegistrationDate($format);
-// Leave the format empty to use the default value ('Y-m-d H:i:s')
-// Give the 'timestamp' value to get the timestamp instead of a date.
-```
-
-Gets his selected theme (returns `string`)
-
-```php
-$account_request->getTheme();
-```
-
-Gets the number of items created during the month (returns `int`)
-
-```php
-$account_request->getItemsCreatedInMmonth();
-```
-
-Gets his monthly quota (returns `int`)
-
-```php
-$account_request->getMonthlyQuota();
-```
+| Function | Returns | Description
+| --- | --- | --- |
+| `$account_request = new WorkFlowyAccount($session_id);` | `WorkFlowyAccount` | Gets an account object |
+| `$account_request->getUsername();` | `string` | Gets his username |
+| `$account_request->getEmail();` | `string` | Gets his email address |
+| `$account_request->getEmail();` | `string` | Gets his registration date |
+| `$account_request->getTheme();` | `string` | Gets his selected theme |
+| `$account_request->getItemsCreatedInMmonth();` | `int` | Gets the number of items created during the month |
+| `$account_request->getMonthlyQuota();` | `int` | Gets his monthly quota |
+| `$account_request->getRegistrationDate('d-m-Y');` | `string` | Gets his registration date<br>Leave the format empty to use the default value ('Y-m-d H:i:s')<br> Give the 'timestamp' value to get the timestamp instead of a date. |
 
 ## Changelog
 
