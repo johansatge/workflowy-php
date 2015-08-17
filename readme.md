@@ -78,7 +78,7 @@ $list_request = new WorkFlowyList($session_id);
 $list = $list_request->getList();
 ```
 
-Then you will be able to perform the following operations on the resulting `$list`, or its sublists (when using `getSublists`, `searchSublists`, etc).
+Then, you will be able to perform the following operations on the resulting `$list`, or its sublists (when using `getSublists`, `searchSublists`, etc).
 
 #### Get the informations of a list
 
@@ -91,8 +91,8 @@ Then you will be able to perform the following operations on the resulting `$lis
 | `$list->isComplete();` | `boolean` | Get the status of the list |
 | `$list->getOPML();` | `string` | Get the list and its sublists as an OPML string |
 | `$list->getSublists();` | `string` | Get the sublists of the list |
-| `$list->searchSublist('/My sublist name/');` | `WorkFlowySublist` | Returns the first childen list matching the given name |
-| `$list->searchSublist('/My sublist name/', array('get_all' => true));` | `array` | Returns the all children lists matching the given name |
+| `$list->searchSublist('/My sublist name/');` | `WorkFlowySublist` | Returns the first child list matching the given name |
+| `$list->searchSublist('/My sublist name/', array('get_all' => true));` | `array` | Returns all children lists matching the given name |
 
 #### Edit the informations of a list
 
