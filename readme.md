@@ -61,7 +61,7 @@ catch (WorkFlowyException $e)
 
 The `$session_id` variable will be used later, when performing requests.
 
-As you can see, you have to use your unencoded password in your code. 
+You have to use your unencoded password in your code. 
 So I strongly advise you to store it in a different file, or ask it once to the user, then store the session ID. (But keep in mind that the session does not last forever.)
 This is a huge limitation, but for now there is no workaround.
 
@@ -78,7 +78,7 @@ $list_request = new WorkFlowyList($session_id);
 $list = $list_request->getList();
 ```
 
-Then, you will be able to perform the following operations on the resulting `$list`, or its sublists (when using `getSublists`, `searchSublists`, etc).
+Then, you will be able to perform the following operations on the resulting `$list`, or its sublists.
 
 #### Get the informations of a list
 
