@@ -93,7 +93,7 @@ $sublist = $list->searchSublist('/My sublist name/', array('get_all' => true));
 
 #### Get the informations of a list
 
-| Function | Parameters | Description
+| Function | Returns | Description
 | --- | --- | --- |
 | `$sublist->getID();` | `string` | Get the ID of the list |
 | `$sublist->getName();` | `string` | Get the name of the list |
