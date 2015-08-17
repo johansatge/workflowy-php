@@ -78,13 +78,12 @@ $list_request = new WorkFlowyList($session_id);
 $list = $list_request->getList();
 ```
 
-Then you will be able to perform the following operations on the resulting `$list`.
+Then you will be able to perform the following operations on the resulting `$list`, or its sublists (when using `getSublists`, `searchSublists`, etc).
 
 #### Get the informations of a list
 
-| Function | Returns | Description
+| Function | Returns | Description |
 | --- | --- | --- |
-
 | `$list->getID();` | `string` | Get the ID of the list |
 | `$list->getName();` | `string` | Get the name of the list |
 | `$list->getDescription();` | `string` | Get the description of the list |
@@ -92,12 +91,12 @@ Then you will be able to perform the following operations on the resulting `$lis
 | `$list->isComplete();` | `boolean` | Get the status of the list |
 | `$list->getOPML();` | `string` | Get the list and its sublists as an OPML string |
 | `$list->getSublists();` | `string` | Get the sublists of the list |
-| `$list->searchSublist('/My sublist name/');` | `WorkFlowySublist` | Returns the first sublist matching the given name |
-| `$list->searchSublist('/My sublist name/', array('get_all' => true));` | `array` | Returns all sublists matching the given name |
+| `$list->searchSublist('/My sublist name/');` | `WorkFlowySublist` | Returns the first childen list matching the given name |
+| `$list->searchSublist('/My sublist name/', array('get_all' => true));` | `array` | Returns the all children lists matching the given name |
 
 #### Edit the informations of a list
 
-| Function | Parameters | Description
+| Function | Parameters | Description |
 | --- | --- | --- |
 | `$list->setName('My sublist');` | `string` | Sets the list name |
 | `$list->setDescription('My sublist description');` | `string` | Sets the list description |
@@ -113,7 +112,7 @@ For instance, if you change the parent of a list and call the getSublists() meth
 
 ### Account API
 
-| Function | Returns | Description
+| Function | Returns | Description |
 | --- | --- | --- |
 | `$account_request = new WorkFlowyAccount($session_id);` | `WorkFlowyAccount` | Gets an account object |
 | `$account_request->getUsername();` | `string` | Gets his username |
