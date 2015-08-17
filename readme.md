@@ -1,3 +1,5 @@
+![Version](https://img.shields.io/packagist/v/johansatge/workflowy-php.svg)
+
 ![WorkflowyPHP](logo.png)
 
 An unofficial WorkFlowy API written in PHP.
