@@ -1,4 +1,4 @@
-# WorkFlowyPHP
+![WorkflowyPHP](logo.png)
 
 An unofficial WorkFlowy API written in PHP.
 
