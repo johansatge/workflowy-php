@@ -100,7 +100,7 @@ Then, you will be able to perform the following operations on the resulting `$li
 | --- | --- | --- |
 | `$list->setName('My sublist');` | `string` | Sets the list name |
 | `$list->setDescription('My sublist description');` | `string` | Sets the list description |
-| `$list->setParent($list, 2);` | `WorkFlowySublist`,`int` | Sets the list parent and position |
+| `$list->setParent($parent_list, 2);` | `WorkFlowySublist`,`int` | Sets the list parent and its position |
 | `$list->setComplete(true);` | `boolean` | Sets the list status |
 | `$list->createSublist('My sublist name', 'My sublist description', 9);` | `string`,`string`,`int` | Creates a sublist |
 
