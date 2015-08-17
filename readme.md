@@ -83,49 +83,25 @@ $list = $list_request->getList();
 
 Looks recursively for a sublist (returns `WorkFlowySublist`)
 
+```php
+// Returns the first match
+$sublist = $list->searchSublist('/My sublist name/');
+
+// Returns all matches as an array
+$sublist = $list->searchSublist('/My sublist name/', array('get_all' => true));
+```
+
 #### Get the informations of a list
 
-Get the ID of the list (returns `string`)
-
-```php
-$sublist->getID();
-```
-
-Get the name of the list (returns `string`)
-
-```php
-$sublist->getName();
-```
-
-Get the description of the list (returns `string`)
-
-```php
-$sublist->getDescription();
-```
-
-Get the parent of the list (returns `WorkFlowySublist`)
-
-```php
-$sublist->getParent();
-```
-
-Get the status of the list (returns `boolean`)
-
-```php
-$sublist->isComplete();
-```
-
-Get the list and its sublists as an OPML string (returns `string`)
-
-```php
-$sublist->getOPML();
-```
-
-Get the sublists of the list (returns `string`)
-
-```php
-$sublist->getSublists();
-```
+| Function | Parameters | Description
+| --- | --- | --- |
+| `$sublist->getID();` | `string` | Get the ID of the list |
+| `$sublist->getName();` | `string` | Get the name of the list |
+| `$sublist->getDescription();` | `string` | Get the description of the list |
+| `$sublist->getParent();` | `WorkFlowySublist` | Get the parent of the list |
+| `$sublist->isComplete();` | `boolean` | Get the status of the list |
+| `$sublist->getOPML();` | `string` | Get the list and its sublists as an OPML string |
+| `$sublist->getSublists();` | `string` | Get the sublists of the list |
 
 #### Edit the informations of a list
 
@@ -135,35 +111,13 @@ Keep in mind that they will send requests to the server, but not update the exis
 
 For instance, if you change the parent of a list and call the getSublists() method on its old parent, the list will still be present in the resulting array.
 
-Sets the list name (needs `string`)
-
-```php
-$sublist->setName('My sublist');
-```
-
-Sets the list description (needs `string`)
-
-```php
-$sublist->setDescription('My sublist description');
-```
-
-Sets the list parent and position (needs `WorkFlowySublist`,`int`)
-
-```php
-$sublist->setParent($list, 2);
-```
-
-Sets the list status (needs `boolean`)
-
-```php
-$sublist->setComplete(true);
-```
-
-Creates a sublist (needs `string`,`string`,`int`)
-
-```php
-$sublist->createSublist('My sublist name', 'My sublist description', 9);
-```
+| Function | Parameters | Description
+| --- | --- | --- |
+| `$sublist->setName('My sublist');` | `string` | Sets the list name |
+| `$sublist->setDescription('My sublist description');` | `string` | Sets the list description |
+| `$sublist->setParent($list, 2);` | `WorkFlowySublist`,`int` | Sets the list parent and position |
+| `$sublist->setComplete(true);` | `boolean` | Sets the list status |
+| `$sublist->createSublist('My sublist name', 'My sublist description', 9);` | `string`,`string`,`int` | Creates a sublist |
 
 ### Account API
 
