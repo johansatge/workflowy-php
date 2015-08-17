@@ -9,7 +9,6 @@ An unofficial WorkFlowy API written in PHP.
 * [Usage](#usage)
   * [Login API](#login-api)
   * [Lists API](#lists-api)
-    * [Get a list](#get-a-list)
     * [Get the informations of a list](#get-the-informations-of-a-list)
     * [Edit the informations of a list](#edit-the-informations-of-a-list)
   * [Account API](#account-api)
@@ -70,9 +69,7 @@ This is a huge limitation, but for now there is no workaround.
 
 Lists-related stuff is managed with the recursive `WorkFlowySublist` class.
 
-#### Get a list
-
-Gets the main account list (returns `WorkFlowySublist`)
+First, you will need to get the main (root) list.
 
 ```php
 use WorkFlowyPHP\WorkFlowyList;
@@ -81,43 +78,38 @@ $list_request = new WorkFlowyList($session_id);
 $list = $list_request->getList();
 ```
 
-Looks recursively for a sublist (returns `WorkFlowySublist`)
-
-```php
-// Returns the first match
-$sublist = $list->searchSublist('/My sublist name/');
-
-// Returns all matches as an array
-$sublist = $list->searchSublist('/My sublist name/', array('get_all' => true));
-```
+Then you will be able to perform the following operations on the resulting `$list`.
 
 #### Get the informations of a list
 
 | Function | Returns | Description
 | --- | --- | --- |
-| `$sublist->getID();` | `string` | Get the ID of the list |
-| `$sublist->getName();` | `string` | Get the name of the list |
-| `$sublist->getDescription();` | `string` | Get the description of the list |
-| `$sublist->getParent();` | `WorkFlowySublist` | Get the parent of the list |
-| `$sublist->isComplete();` | `boolean` | Get the status of the list |
-| `$sublist->getOPML();` | `string` | Get the list and its sublists as an OPML string |
-| `$sublist->getSublists();` | `string` | Get the sublists of the list |
+
+| `$list->getID();` | `string` | Get the ID of the list |
+| `$list->getName();` | `string` | Get the name of the list |
+| `$list->getDescription();` | `string` | Get the description of the list |
+| `$list->getParent();` | `WorkFlowySublist` | Get the parent of the list |
+| `$list->isComplete();` | `boolean` | Get the status of the list |
+| `$list->getOPML();` | `string` | Get the list and its sublists as an OPML string |
+| `$list->getSublists();` | `string` | Get the sublists of the list |
+| `$list->searchSublist('/My sublist name/');` | `WorkFlowySublist` | Returns the first sublist matching the given name |
+| `$list->searchSublist('/My sublist name/', array('get_all' => true));` | `array` | Returns all sublists matching the given name |
 
 #### Edit the informations of a list
 
-The above methods are used to edit data.
+| Function | Parameters | Description
+| --- | --- | --- |
+| `$list->setName('My sublist');` | `string` | Sets the list name |
+| `$list->setDescription('My sublist description');` | `string` | Sets the list description |
+| `$list->setParent($list, 2);` | `WorkFlowySublist`,`int` | Sets the list parent and position |
+| `$list->setComplete(true);` | `boolean` | Sets the list status |
+| `$list->createSublist('My sublist name', 'My sublist description', 9);` | `string`,`string`,`int` | Creates a sublist |
+
+The methods below are used to edit data.
 
 Keep in mind that they will send requests to the server, but not update the existing variables.
 
 For instance, if you change the parent of a list and call the getSublists() method on its old parent, the list will still be present in the resulting array.
-
-| Function | Parameters | Description
-| --- | --- | --- |
-| `$sublist->setName('My sublist');` | `string` | Sets the list name |
-| `$sublist->setDescription('My sublist description');` | `string` | Sets the list description |
-| `$sublist->setParent($list, 2);` | `WorkFlowySublist`,`int` | Sets the list parent and position |
-| `$sublist->setComplete(true);` | `boolean` | Sets the list status |
-| `$sublist->createSublist('My sublist name', 'My sublist description', 9);` | `string`,`string`,`int` | Creates a sublist |
 
 ### Account API
 
