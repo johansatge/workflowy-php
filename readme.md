@@ -129,6 +129,7 @@ For instance, if you change the parent of a list and call the getSublists() meth
 
 | Version | Date | Notes |
 | --- | --- | --- |
+| `0.1.1` | August 25, 2015 | Fix case of filenames ([@citywill](https://github.com/citywill)) |
 | `0.1` | January 1st, 2015 | Initial version |
 
 ## License

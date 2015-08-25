@@ -1,8 +1,8 @@
 {
     "name": "johansatge/workflowy-php",
     "description": "An unofficial WorkFlowy API",
-    "version": "0.1-beta",
-    "minimum-stability": "beta",
+    "version": "0.1.1",
+    "minimum-stability": "stable",
     "type": "library",
     "keywords": [
         "workflowy",
