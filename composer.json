@@ -1,7 +1,7 @@
 {
     "name": "johansatge/workflowy-php",
     "description": "An unofficial WorkFlowy API",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "minimum-stability": "stable",
     "type": "library",
     "keywords": [
@@ -14,8 +14,7 @@
     "authors": [
         {
             "name": "Johan Satgé",
-            "email": "contact@johansatge.fr",
-            "homepage": "http://www.johansatge.fr"
+            "homepage": "http://johansatge.com"
         }
     ],
     "support": {
