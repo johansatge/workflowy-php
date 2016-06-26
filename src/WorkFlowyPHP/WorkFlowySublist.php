@@ -149,7 +149,7 @@ class WorkFlowySublist
         }
         foreach ($this->sublists as $child)
         {
-            $match = $child->searchSublist($expression, $get_all);
+            $match = $child->searchSublist($expression, array('get_all' => $get_all));
             if ($match !== false && !$get_all)
             {
                 return $match;
