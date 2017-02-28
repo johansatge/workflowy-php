@@ -48,30 +48,32 @@ if (empty($session_id))
  * Account
  */
 
-// $account_request = new WorkFlowyAccount($session_id);
-// var_dump($account_request->getUsername());
-// var_dump($account_request->getEmail());
-// var_dump($account_request->getRegistrationDate());
-// var_dump($account_request->getTheme());
-// var_dump($account_request->getItemsCreatedInMmonth());
-// var_dump($account_request->getMonthlyQuota());
-// exit;
+$account_request = new WorkFlowyAccount($session_id);
+var_dump($account_request->getUsername());
+var_dump($account_request->getEmail());
+var_dump($account_request->getRegistrationDate());
+var_dump($account_request->getTheme());
+var_dump($account_request->getItemsCreatedInMmonth());
+var_dump($account_request->getMonthlyQuota());
 
 /**
  * Lists
  */
 
-// $list_request = new WorkFlowyList($session_id);
-// $list = $list_request->getList();
+$list_request = new WorkFlowyList($session_id);
+$list = $list_request->getList();
 
-// $sublist = $list->searchSublist('#Test for timestamp#');
-// $sublist->createSublist('creation test', date('m-d-Y H:i:s'), 999);
+$sublist = $list->searchSublist('#Test for timestamp#');
+$sublist->createSublist('creation test', date('m-d-Y H:i:s'), 999);
 
-// var_dump($sublist->getID());
-// var_dump($sublist->getName());
-// var_dump($sublist->getDescription());
+var_dump($sublist->getID());
+var_dump($sublist->getName());
+var_dump(date('Y-m-d H:i:s', $sublist->getLastModifiedTime()));
+var_dump($sublist->getDescription());
+var_dump($sublist->isComplete());
+var_dump(date('Y-m-d H:i:s', $sublist->getCompletedTime()));
+
 // var_dump($sublist->getParent());
-// var_dump($sublist->isComplete());
 // var_dump($sublist->getOPML());
 // var_dump($sublist->getSublists());
 

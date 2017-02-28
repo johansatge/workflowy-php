@@ -91,6 +91,8 @@ Then, you will be able to perform the following operations on the resulting `$li
 | `$list->getDescription();` | `string` | Get the description of the list |
 | `$list->getParent();` | `WorkFlowySublist` | Get the parent of the list |
 | `$list->isComplete();` | `boolean` | Get the status of the list |
+| `$list->getCompletedTime();` | `int` | Get the completed time of the list (Unix timestamp) |
+| `$list->getLastModifiedTime();` | `int` | Get the last modified time of the list (Unix timestamp) |
 | `$list->getOPML();` | `string` | Get the list and its sublists as an OPML string |
 | `$list->getSublists();` | `string` | Get the sublists of the list |
 | `$list->searchSublist('/My sublist name/');` | `WorkFlowySublist` | Returns the first child list matching the given name |

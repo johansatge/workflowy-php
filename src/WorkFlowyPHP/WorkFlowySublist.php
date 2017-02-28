@@ -11,6 +11,7 @@ class WorkFlowySublist
     private $name;
     private $complete;
     private $description;
+    private $lastModified;
     private $sublists;
 
     private $list;
@@ -25,18 +26,20 @@ class WorkFlowySublist
      * @param string             $name
      * @param string             $description
      * @param bool               $complete
+     * @param int                $last_modified
      * @param array              $sublists
      * @param WorkFlowyList      $list
      * @param WorkFlowyTransport $transport
      * @throws WorkFlowyException
      */
-    public function __construct($id, $name, $description, $complete, $sublists, $list, $transport)
+    public function __construct($id, $name, $description, $complete, $last_modified, $sublists, $list, $transport)
     {
-        $this->id          = is_string($id) ? $id : '';
-        $this->name        = is_string($name) ? $name : '';
-        $this->description = is_string($description) ? $description : '';
-        $this->complete    = $complete ? true : false;
-        $this->sublists    = array();
+        $this->id           = is_string($id) ? $id : '';
+        $this->name         = is_string($name) ? $name : '';
+        $this->description  = is_string($description) ? $description : '';
+        $this->lastModified = is_numeric($last_modified) ? $last_modified : 0;
+        $this->complete     = is_numeric($complete) ? $complete : false;
+        $this->sublists     = array();
         if (is_array($sublists))
         {
             foreach ($sublists as $sublist)
@@ -88,6 +91,24 @@ class WorkFlowySublist
     }
 
     /**
+     * Returns the last modification time
+     * @return int
+     */
+    public function getLastModifiedTime()
+    {
+        return $this->lastModified;
+    }
+
+    /**
+     * Returns the completed time (if available, false otherwise)
+     * @return int|bool
+     */
+    public function getCompletedTime()
+    {
+        return $this->complete;
+    }
+
+    /**
      * Returns the parent of the list
      * @return bool|WorkFlowySublist
      */
@@ -102,7 +123,7 @@ class WorkFlowySublist
      */
     public function isComplete()
     {
-        return $this->complete;
+        return $this->complete !== false;
     }
 
     /**

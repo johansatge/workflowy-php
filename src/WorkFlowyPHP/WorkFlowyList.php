@@ -10,6 +10,7 @@ class WorkFlowyList
     private $transport;
     private $parents;
     private $sublists;
+    private $dateJoinedTimestampInSeconds = 0;
 
     /**
      * Builds a WorkFlowy list
@@ -34,9 +35,13 @@ class WorkFlowyList
         {
             $raw_lists = $data['projectTreeData']['mainProjectTreeInfo']['rootProjectChildren'];
         }
+        if (!empty($data['projectTreeData']['mainProjectTreeInfo']['dateJoinedTimestampInSeconds']))
+        {
+            $this->dateJoinedTimestampInSeconds = $data['projectTreeData']['mainProjectTreeInfo']['dateJoinedTimestampInSeconds'];
+        }
         $this->parents  = array();
         $this->sublists = array();
-        return $this->parseList(array('id' => 'None', 'nm' => null, 'no' => null, 'cp' => null, 'ch' => $raw_lists), false);
+        return $this->parseList(array('id' => 'None', 'nm' => null, 'no' => null, 'cp' => null, 'lm' => 0, 'ch' => $raw_lists), false);
     }
 
     /**
@@ -47,17 +52,19 @@ class WorkFlowyList
      */
     private function parseList($raw_list, $parent_id)
     {
-        $id           = !empty($raw_list['id']) ? $raw_list['id'] : '';
-        $name         = !empty($raw_list['nm']) ? $raw_list['nm'] : '';
-        $description  = !empty($raw_list['no']) ? $raw_list['no'] : '';
-        $complete     = !empty($raw_list['cp']);
-        $raw_sublists = !empty($raw_list['ch']) && is_array($raw_list['ch']) ? $raw_list['ch'] : array();
-        $sublists     = array();
+        $id            = !empty($raw_list['id']) ? $raw_list['id'] : '';
+        $name          = !empty($raw_list['nm']) ? $raw_list['nm'] : '';
+        $description   = !empty($raw_list['no']) ? $raw_list['no'] : '';
+        $raw_sublists  = !empty($raw_list['ch']) && is_array($raw_list['ch']) ? $raw_list['ch'] : array();
+        // Complete & last modified dates are offsets, starting at the user's registration date (in minutes)
+        $complete      = !empty($raw_list['cp']) ? $this->dateJoinedTimestampInSeconds + ($raw_list['cp'] * 60) : false;
+        $last_modified = !empty($raw_list['lm']) ? $this->dateJoinedTimestampInSeconds + ($raw_list['lm'] * 60) : 0;
+        $sublists      = array();
         foreach ($raw_sublists as $raw_sublist)
         {
             $sublists[] = $this->parseList($raw_sublist, $id);
         }
-        $sublist = new WorkFlowySublist($id, $name, $description, $complete, $sublists, $this, $this->transport);
+        $sublist = new WorkFlowySublist($id, $name, $description, $complete, $last_modified, $sublists, $this, $this->transport);
         if (!empty($parent_id))
         {
             $this->parents[$id] = $parent_id;
