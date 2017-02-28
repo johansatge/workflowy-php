@@ -121,7 +121,6 @@ For instance, if you change the parent of a list and call the getSublists() meth
 | `$account_request = new WorkFlowyAccount($session_id);` | `WorkFlowyAccount` | Gets an account object |
 | `$account_request->getUsername();` | `string` | Gets his username |
 | `$account_request->getEmail();` | `string` | Gets his email address |
-| `$account_request->getEmail();` | `string` | Gets his registration date |
 | `$account_request->getTheme();` | `string` | Gets his selected theme |
 | `$account_request->getItemsCreatedInMmonth();` | `int` | Gets the number of items created during the month |
 | `$account_request->getMonthlyQuota();` | `int` | Gets his monthly quota |
@@ -131,6 +130,7 @@ For instance, if you change the parent of a list and call the getSublists() meth
 
 | Version | Date | Notes |
 | --- | --- | --- |
+| `0.1.3` | 2017-02-28 | Add `$list->getCompletedTime()` & `$list->getLastModifiedTime()` methods (#5)<br>Fix OPML encoding (#4) |
 | `0.1.2` | 2016-06-26 | Fix `searchSublist`with `get_all` option ([@hirechrismeyers](https://github.com/hirechrismeyers)) |
 | `0.1.1` | 2015-08-25 | Fix case of filenames ([@citywill](https://github.com/citywill)) |
 | `0.1` | 2015-01-01 | Initial version |
