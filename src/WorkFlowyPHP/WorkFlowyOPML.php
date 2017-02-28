@@ -96,7 +96,7 @@ class WorkFlowyOPML
      */
     private function esc($string)
     {
-        return str_replace('"', '\"', stripslashes($string));
+        return htmlspecialchars($string);
     }
 
 }
