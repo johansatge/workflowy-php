@@ -94,7 +94,7 @@ Then, you will be able to perform the following operations on the resulting `$li
 | `$list->getCompletedTime();` | `int` | Get the completed time of the list (Unix timestamp) |
 | `$list->getLastModifiedTime();` | `int` | Get the last modified time of the list (Unix timestamp) |
 | `$list->getOPML();` | `string` | Get the list and its sublists as an OPML string |
-| `$list->getSublists();` | `string` | Get the sublists of the list |
+| `$list->getSublists();` | `array` | Get the sublists of the list |
 | `$list->searchSublist('/My sublist name/');` | `WorkFlowySublist` | Returns the first child list matching the given name |
 | `$list->searchSublist('/My sublist name/', array('get_all' => true));` | `array` | Returns all children lists matching the given name |
 
