@@ -7,6 +7,7 @@ require_once 'vendor/autoload.php';
 /**
  * CLI parameters
  */
+
 $session_id = false;
 foreach($argv as $arg)
 {
@@ -34,7 +35,7 @@ if (empty($session_id))
 {
     try
     {
-        $session_id = WorkFlowy::login('workflowy1@yopmail.com', 'workflowy1');
+        $session_id = WorkFlowy::login('workflowy-php@protonmail.com', require('sample_password.php'));
         var_dump('Session ID: ' . $session_id);
     }
     catch (WorkFlowyException $e)
