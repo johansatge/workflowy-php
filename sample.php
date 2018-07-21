@@ -1,26 +1,14 @@
 <?php
 
-date_default_timezone_set('Europe/Paris');
-
-require_once 'vendor/autoload.php';
-
-/**
- * CLI parameters
- */
-
-$session_id = false;
-foreach($argv as $arg)
-{
-    preg_match_all('#^--session-id=(.*)#', $arg, $matches);
-    if (!empty($matches[1][0]))
-    {
-        $session_id = $matches[1][0];
-    }
-}
-
 /**
  * Sample usage
  */
+
+date_default_timezone_set('Europe/Paris');
+$sep = str_repeat('-', 20) . "\n";
+$date = date('Y-m-d H:i:s');
+
+require_once 'vendor/autoload.php';
 
 use WorkFlowyPHP\WorkFlowy;
 use WorkFlowyPHP\WorkFlowyException;
@@ -31,18 +19,16 @@ use WorkFlowyPHP\WorkFlowyAccount;
  * Session
  */
 
-if (empty($session_id))
+echo $sep;
+$session_id = null;
+try
 {
-    try
-    {
-        $session_id = WorkFlowy::login('workflowy-php@protonmail.com', require('sample_password.php'));
-        var_dump('Session ID: ' . $session_id);
-    }
-    catch (WorkFlowyException $e)
-    {
-        var_dump($e->getMessage());
-    }
-    exit;
+    $session_id = WorkFlowy::login('workflowy-php@protonmail.com', require('sample_password.php'));
+    echo 'Session ID: ' . $session_id . "\n";
+}
+catch (WorkFlowyException $e)
+{
+    echo 'Connection error: ' . $e->getMessage() . "\n";
 }
 
 /**
@@ -50,12 +36,14 @@ if (empty($session_id))
  */
 
 $account_request = new WorkFlowyAccount($session_id);
-var_dump($account_request->getUsername());
-var_dump($account_request->getEmail());
-var_dump($account_request->getRegistrationDate());
-var_dump($account_request->getTheme());
-var_dump($account_request->getItemsCreatedInMmonth());
-var_dump($account_request->getMonthlyQuota());
+
+echo $sep;
+echo 'Username:               ' . $account_request->getUsername() . "\n";
+echo 'Email:                  ' . $account_request->getEmail() . "\n";
+echo 'Registration date:      ' . $account_request->getRegistrationDate() . "\n";
+echo 'Theme:                  ' . $account_request->getTheme() . "\n";
+echo 'Items created in month: ' . $account_request->getItemsCreatedInMmonth() . "\n";
+echo 'Monthly quota:          ' . $account_request->getMonthlyQuota() . "\n";
 
 /**
  * Lists
@@ -64,22 +52,26 @@ var_dump($account_request->getMonthlyQuota());
 $list_request = new WorkFlowyList($session_id);
 $list = $list_request->getList();
 
-$sublist = $list->searchSublist('#Test for timestamp#');
-$sublist->createSublist('creation test', date('m-d-Y H:i:s'), 999);
+$sublist = $list->searchSublist('#Sample sublist#');
 
-var_dump($sublist->getID());
-var_dump($sublist->getName());
-var_dump(date('Y-m-d H:i:s', $sublist->getLastModifiedTime()));
-var_dump($sublist->getDescription());
-var_dump($sublist->isComplete());
-var_dump(date('Y-m-d H:i:s', $sublist->getCompletedTime()));
+echo $sep;
+echo 'List ID:              ' . $sublist->getID() . "\n";
+echo 'List name:            ' . $sublist->getName() . "\n";
+echo 'List modified date:   ' . date('Y-m-d H:i:s', $sublist->getLastModifiedTime()) . "\n";
+echo 'List description:     ' . $sublist->getDescription() . "\n";
+echo 'List completion:      ' . $sublist->isComplete() . "\n";
+echo 'List completion time: ' . date('Y-m-d H:i:s', $sublist->getCompletedTime()) . "\n";
+
+echo $sep;
+echo 'List OPML: ' . $sublist->getOPML() . "\n";
+
+$sublist->createSublist('Sample created sublist', 'With sample description ' . $date, 999);
+$sublist->setName('Sample sublist ' . $date);
+$sublist->setDescription('Sample description ' . $date);
 
 // var_dump($sublist->getParent());
 // var_dump($sublist->getOPML());
 // var_dump($sublist->getSublists());
 
-// $sublist->setName('my sublist');
-// $sublist->setDescription('my description');
 // $sublist->setParent($list, 2);
 // $sublist->setComplete(true || false);
-// $sublist->createSublist('My list name', 'My list description', 999);
