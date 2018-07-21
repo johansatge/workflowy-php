@@ -41,6 +41,7 @@ echo $sep;
 echo 'Username:               ' . $account_request->getUsername() . "\n";
 echo 'Email:                  ' . $account_request->getEmail() . "\n";
 echo 'Registration date:      ' . $account_request->getRegistrationDate() . "\n";
+echo 'Registration time:      ' . $account_request->getRegistrationDate('timestamp') . "\n";
 echo 'Theme:                  ' . $account_request->getTheme() . "\n";
 echo 'Items created in month: ' . $account_request->getItemsCreatedInMmonth() . "\n";
 echo 'Monthly quota:          ' . $account_request->getMonthlyQuota() . "\n";

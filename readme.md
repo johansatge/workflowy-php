@@ -36,7 +36,7 @@ By using [Composer](https://getcomposer.org/):
 }
 ```
 
-If you do not use Composer, you can download the source files, install it anywhere on your project, and call the providden autoloader file:
+If you do not use Composer, you can download the source files, install them anywhere on your project, and call the providden autoloader file:
 
 ```php
 <?php require_once '/your/project/root/path/workflowy-php/src/autoload.php';
@@ -63,7 +63,7 @@ catch (WorkFlowyException $e)
 
 The `$session_id` variable will be used later, when performing requests.
 
-You have to use your unencoded password in your code. 
+You have to use your unencoded password in your code.
 So I strongly advise you to store it in a different file, or ask it once to the user, then store the session ID. (But keep in mind that the session does not last forever.)
 This is a huge limitation, but for now there is no workaround.
 
@@ -124,7 +124,8 @@ For instance, if you change the parent of a list and call the getSublists() meth
 | `$account_request->getTheme();` | `string` | Gets his selected theme |
 | `$account_request->getItemsCreatedInMmonth();` | `int` | Gets the number of items created during the month |
 | `$account_request->getMonthlyQuota();` | `int` | Gets his monthly quota |
-| `$account_request->getRegistrationDate('d-m-Y');` | `string` | Gets his registration date<br>Leave the format empty to use the default value ('Y-m-d H:i:s')<br> Give the 'timestamp' value to get the timestamp instead of a date. |
+| `$account_request->getRegistrationDate('d-m-Y');` | `string` | Gets his registration date<br>Leave the format empty to use the default value ('Y-m-d H:i:s') |
+| `$account_request->getRegistrationDate('timestamp');` | `string` | Gets his registration time |
 
 ## Changelog
 
