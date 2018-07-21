@@ -64,7 +64,7 @@ class WorkFlowyAccount
      * Returns the number of items created on the current month
      * @return int
      */
-    public function getItemsCreatedInMmonth()
+    public function getItemsCreatedInMonth()
     {
         return $this->itemsCreatedInMonth;
     }

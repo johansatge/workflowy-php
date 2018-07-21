@@ -122,7 +122,7 @@ For instance, if you change the parent of a list and call the getSublists() meth
 | `$account_request->getUsername();` | `string` | Gets his username |
 | `$account_request->getEmail();` | `string` | Gets his email address |
 | `$account_request->getTheme();` | `string` | Gets his selected theme |
-| `$account_request->getItemsCreatedInMmonth();` | `int` | Gets the number of items created during the month |
+| `$account_request->getItemsCreatedInMonth();` | `int` | Gets the number of items created during the month |
 | `$account_request->getMonthlyQuota();` | `int` | Gets his monthly quota |
 | `$account_request->getRegistrationDate('d-m-Y');` | `string` | Gets his registration date<br>Leave the format empty to use the default value ('Y-m-d H:i:s') |
 | `$account_request->getRegistrationDate('timestamp');` | `string` | Gets his registration time |
