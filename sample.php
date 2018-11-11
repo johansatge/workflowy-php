@@ -60,7 +60,7 @@ echo 'List ID:              ' . $sublist->getID() . "\n";
 echo 'List name:            ' . $sublist->getName() . "\n";
 echo 'List modified date:   ' . date('Y-m-d H:i:s', $sublist->getLastModifiedTime()) . "\n";
 echo 'List description:     ' . $sublist->getDescription() . "\n";
-echo 'List completion:      ' . $sublist->isComplete() . "\n";
+echo 'List is completed:    ' . ($sublist->isComplete() ? 'yes' : 'no') . "\n";
 echo 'List completion time: ' . date('Y-m-d H:i:s', $sublist->getCompletedTime()) . "\n";
 
 echo $sep;

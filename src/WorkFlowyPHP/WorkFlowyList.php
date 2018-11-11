@@ -56,9 +56,9 @@ class WorkFlowyList
         $name          = !empty($raw_list['nm']) ? $raw_list['nm'] : '';
         $description   = !empty($raw_list['no']) ? $raw_list['no'] : '';
         $raw_sublists  = !empty($raw_list['ch']) && is_array($raw_list['ch']) ? $raw_list['ch'] : array();
-        // Complete & last modified dates are offsets, starting at the user's registration date (in minutes)
-        $complete      = !empty($raw_list['cp']) ? $this->dateJoinedTimestampInSeconds + ($raw_list['cp'] * 60) : false;
-        $last_modified = !empty($raw_list['lm']) ? $this->dateJoinedTimestampInSeconds + ($raw_list['lm'] * 60) : 0;
+        // Complete & last modified dates are offsets, starting at the user's registration date (in seconds)
+        $complete      = !empty($raw_list['cp']) ? $this->dateJoinedTimestampInSeconds + $raw_list['cp'] : false;
+        $last_modified = !empty($raw_list['lm']) ? $this->dateJoinedTimestampInSeconds + $raw_list['lm'] : 0;
         $sublists      = array();
         foreach ($raw_sublists as $raw_sublist)
         {
