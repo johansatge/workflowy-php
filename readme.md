@@ -131,6 +131,7 @@ For instance, if you change the parent of a list and call the getSublists() meth
 
 | Version | Date | Notes |
 | --- | --- | --- |
+| `0.2.1` | 2018-11-11 | Fix `getLastModifiedTime()` and `getCompletedTime()` methods<br>Internal WorkFlowy API started returning timestamps in seconds |
 | `0.2.0` | 2018-07-21 | Fix `getItemsCreatedInMmonth()` method naming (renamed to `getItemsCreatedInMonth()`)<br>Update documentation<br>Update sample code |
 | `0.1.3` | 2017-02-28 | Add `$list->getCompletedTime()` & `$list->getLastModifiedTime()` methods (#5)<br>Fix OPML encoding (#4) |
 | `0.1.2` | 2016-06-26 | Fix `searchSublist`with `get_all` option ([@hirechrismeyers](https://github.com/hirechrismeyers)) |
