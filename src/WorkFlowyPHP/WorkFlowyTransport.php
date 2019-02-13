@@ -7,7 +7,7 @@ namespace WorkFlowyPHP;
 class WorkFlowyTransport
 {
 
-    const LOGIN_URL = 'https://workflowy.com/accounts/login/';
+    const LOGIN_URL = 'https://workflowy.com/ajax_login';
     const API_URL   = 'https://workflowy.com/%s';
     const TIMEOUT   = 5;
 
@@ -71,7 +71,7 @@ class WorkFlowyTransport
         {
             throw new WorkFlowyException('Invalid API request');
         }
-        $raw_data = $this->curl(sprintf(self::API_URL, $method), $data, false);
+        $raw_data = $this->curl(sprintf(self::API_URL, $method), $data);
         $json     = json_decode($raw_data, true);
         if ($json === null)
         {
@@ -106,26 +106,25 @@ class WorkFlowyTransport
         {
             throw new WorkFlowyException('You must provide credentials as strings');
         }
-        $raw_data = $this->curl(self::LOGIN_URL, array('username' => $username, 'password' => $password, 'next' => ''), true);
-        preg_match('#^Set-Cookie:\s*sessionid=([^;]*)#mi', $raw_data, $session_id_match);
-        return preg_match('#^Location:#mi', $raw_data) && !empty($session_id_match[1]) ? $session_id_match[1] : false;
+        $raw_data = $this->curl(self::LOGIN_URL, array('username' => $username, 'password' => $password, 'next' => ''));
+        $json     = json_decode($raw_data, true);
+        return !empty($json['sid']) ? $json['sid'] : false;
     }
 
     /**
      * Sends a CURL request to the server, by using the given POST data
      * @param string $url
      * @param array $post_fields
-     * @param bool $return_headers
      * @throws WorkFlowyException
      * @return array|string
      */
-    private function curl($url, $post_fields, $return_headers)
+    private function curl($url, $post_fields)
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
-        curl_setopt($ch, CURLOPT_HEADER, $return_headers ? true : false);
+        curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_TIMEOUT, self::TIMEOUT);
         if (count($post_fields) > 0)
         {
