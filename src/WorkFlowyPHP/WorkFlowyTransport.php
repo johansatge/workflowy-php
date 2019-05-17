@@ -106,9 +106,23 @@ class WorkFlowyTransport
         {
             throw new WorkFlowyException('You must provide credentials as strings');
         }
-        $raw_data = $this->curl(self::LOGIN_URL, array('username' => $username, 'password' => $password, 'next' => ''));
-        $json     = json_decode($raw_data, true);
-        return !empty($json['sid']) ? $json['sid'] : false;
+        $headers = [];
+        $raw_data = $this->curl(
+            self::LOGIN_URL,
+            array('username' => $username, 'password' => $password, 'next' => ''),
+            $headers
+        );
+
+        if (!empty($headers['set-cookie']) && is_array($headers['set-cookie'])) {
+            foreach ($headers['set-cookie'] as $cookie) {
+                $matches = [];
+                if (preg_match('`^sessionid=([a-z0-9]+);`mis', $cookie, $matches)) {
+                    return $matches[1];
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -118,7 +132,7 @@ class WorkFlowyTransport
      * @throws WorkFlowyException
      * @return array|string
      */
-    private function curl($url, $post_fields)
+    private function curl($url, $post_fields, &$headers = [])
     {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -126,6 +140,26 @@ class WorkFlowyTransport
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_TIMEOUT, self::TIMEOUT);
+
+        $headers = [];
+        // Code from https://stackoverflow.com/a/41135574/696517
+        // This function is called by curl for each header received
+        curl_setopt($ch, CURLOPT_HEADERFUNCTION, function($curl, $header) use (&$headers) {
+            $len = strlen($header);
+            $header = explode(':', $header, 2);
+            if (count($header) < 2) { // ignore invalid headers
+                return $len;
+            }
+
+            $name = strtolower(trim($header[0]));
+            if (!array_key_exists($name, $headers)) {
+                $headers[$name] = [trim($header[1])];
+            } else {
+                $headers[$name][] = trim($header[1]);
+            }
+            return $len;
+        });
+
         if (count($post_fields) > 0)
         {
             curl_setopt($ch, CURLOPT_POST, true);
