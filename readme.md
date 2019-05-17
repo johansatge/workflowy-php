@@ -131,6 +131,7 @@ For instance, if you change the parent of a list and call the getSublists() meth
 
 | Version | Date | Notes |
 | --- | --- | --- |
+| `0.2.3` | 2019-05-17 | Fix authentication process (#10) |
 | `0.2.2` | 2019-02-13 | Fix authentication process (#8) |
 | `0.2.1` | 2018-11-11 | Fix `getLastModifiedTime()` and `getCompletedTime()` methods<br>Internal WorkFlowy API started returning timestamps in seconds |
 | `0.2.0` | 2018-07-21 | Fix `getItemsCreatedInMmonth()` method naming (renamed to `getItemsCreatedInMonth()`)<br>Update documentation<br>Update sample code |
