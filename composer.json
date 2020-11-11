@@ -1,8 +1,6 @@
 {
     "name": "johansatge/workflowy-php",
     "description": "An unofficial WorkFlowy API",
-    "version": "0.2.3",
-    "minimum-stability": "stable",
     "type": "library",
     "keywords": [
         "workflowy",
@@ -15,22 +13,32 @@
         {
             "name": "Johan Satgé",
             "homepage": "http://johansatge.com"
+        },
+        {
+            "name": "Christian Riesen",
+            "homepage": "https://christianriesen.com"
         }
     ],
+    "require": {
+        "php": ">=7.4",
+        "ext-curl": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.17",
+        "phpstan/phpstan": "^0.12",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {"JohanSatge\\WorkFlowy\\": "src/"}
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "JohanSatge\\WorkFlowy\\Tests\\": "tests/"
+        }
+    },
     "support": {
         "issues": "https://github.com/johansatge/workflowy-php/issues",
         "source": "https://github.com/johansatge/workflowy-php"
-    },
-    "require": {},
-    "require-dev": {},
-    "autoload": {
-        "psr-4": {
-            "WorkFlowyPHP\\": "src/"
-        },
-        "psr-0": {
-            "WorkFlowyPHP": "src/"
-        },
-        "classmap": [],
-        "files": []
     }
 }
