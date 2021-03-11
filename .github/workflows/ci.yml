@@ -1,0 +1,57 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  php-cs-fixer:
+    name: PHP-CS-Fixer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: PHP-CS-Fixer
+        uses: docker://oskarstark/php-cs-fixer-ga
+        with:
+          args: --diff --dry-run
+
+  phpstan:
+    name: 'PHPStan'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Composer
+        uses: php-actions/composer@v5
+        with:
+          php_version: 8.0
+      - name: PHPStan
+        uses: php-actions/phpstan@v2
+        with:
+          php_version: 8.0
+
+  phpunit:
+    name: 'PHPUnit'
+    runs-on: ${{ matrix.ubuntu-version }}
+    strategy:
+      # Making sure all versions get tested even if one fails
+      fail-fast: false
+      matrix:
+        include:
+          - php-version: '7.4'
+            phpunit-version: '9.5.0'
+            ubuntu-version: 'ubuntu-20.04'
+          # Once PHP 8.0 also works, this can be enabled
+          #- php-version: '8.0'
+          #  phpunit-version: '9.5.0'
+          #  ubuntu-version: 'ubuntu-20.04'
+    steps:
+      - uses: actions/checkout@v2
+      - name: Composer
+        uses: php-actions/composer@v5
+        with:
+          php_version: ${{ matrix.php-version }}
+
+      - name: PHPUnit Tests
+        uses: php-actions/phpunit@v2
+        with:
+          version: ${{ matrix.phpunit-version }}
+          php_version: ${{ matrix.php-version }}
+          #args: --coverage-text

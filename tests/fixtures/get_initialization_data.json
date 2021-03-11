@@ -1,0 +1,486 @@
+{
+  "projectTreeData": {
+    "clientId": "2021-01-06 20:27:24.479434",
+    "mainProjectTreeInfo": {
+      "rootProject": null,
+      "rootProjectChildren": [
+        {
+          "id": "2c2d06f0-176b-e9c9-41ed-343370ff4bae",
+          "nm": "In Root Normal",
+          "metadata": {},
+          "lm": 115
+        },
+        {
+          "id": "4dcd8072-4800-6e56-107b-fddee7c530a2",
+          "nm": "In Root Normal with Note",
+          "metadata": {},
+          "no": "Note on Item",
+          "lm": 743
+        },
+        {
+          "id": "024ea52f-5a76-9497-0f0f-e16310b2d150",
+          "nm": "In Root Normal with #tag",
+          "metadata": {},
+          "lm": 804
+        },
+        {
+          "id": "1c56ffe5-46df-36d8-ee2b-9c701906fd13",
+          "nm": "In Root Completed",
+          "metadata": {},
+          "cp": 736,
+          "lm": 736
+        },
+        {
+          "id": "7895074c-9d44-61ec-e3c0-eede969e9eae",
+          "nm": "In Root <b>Bold</b>",
+          "metadata": {},
+          "lm": 115
+        },
+        {
+          "id": "24b0aaf0-8940-b067-4132-a56923fd9a03",
+          "nm": "In Root <u>Underlined</u>",
+          "metadata": {},
+          "lm": 148
+        },
+        {
+          "id": "d8bb4252-29ab-62f9-64ee-4cdc31c619ca",
+          "nm": "In Root <i>Italic</i>",
+          "metadata": {},
+          "lm": 110
+        },
+        {
+          "id": "fe589723-ebf5-9374-664f-d095ec900447",
+          "nm": "In Root <a href=\"https://workflowy.com\">Linked</a>",
+          "metadata": {},
+          "lm": 136
+        },
+        {
+          "id": "9a2ebabe-973d-d09b-6cc2-feeb29923439",
+          "nm": "Sublists",
+          "metadata": {},
+          "lm": 382,
+          "ch": [
+            {
+              "id": "815ef6fc-0168-d16a-a7de-a540335b0770",
+              "nm": "Item 1",
+              "metadata": {},
+              "lm": 765
+            },
+            {
+              "id": "307c8c78-c3ec-8b88-5aa8-7d07555c9118",
+              "nm": "Item 2",
+              "metadata": {},
+              "lm": 200,
+              "ch": [
+                {
+                  "id": "056b1a03-4fca-fa9c-e4e5-2d2ef5319328",
+                  "nm": "Item 2.1",
+                  "metadata": {},
+                  "lm": 216,
+                  "ch": [
+                    {
+                      "id": "0433a65f-be6b-2dd9-453c-9873c8284234",
+                      "nm": "Item 2.1.1",
+                      "metadata": {},
+                      "lm": 229
+                    },
+                    {
+                      "id": "f195acc2-d4b5-bbb0-9ded-488968a07ec2",
+                      "nm": "Item 2.1.2",
+                      "metadata": {},
+                      "lm": 235
+                    }
+                  ]
+                },
+                {
+                  "id": "eea3bf4e-01d0-fd88-1d77-dd1d3ed5db96",
+                  "nm": "Item 2.2",
+                  "metadata": {},
+                  "lm": 220
+                },
+                {
+                  "id": "09b1be03-c256-d992-bdc9-52dda94728ce",
+                  "nm": "Item 2.3",
+                  "metadata": {},
+                  "lm": 223,
+                  "ch": [
+                    {
+                      "id": "689fbf38-8c94-0555-b77f-c34521dcfba6",
+                      "nm": "Item 2.3.1",
+                      "metadata": {},
+                      "lm": 241
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "496db1c8-74c9-83f2-1a03-820e14257538",
+              "nm": "Item 3",
+              "metadata": {},
+              "lm": 202
+            }
+          ]
+        },
+        {
+          "id": "ce9b588a-008c-83a7-060f-3a59b5409740",
+          "nm": "Boards",
+          "metadata": {},
+          "lm": 371,
+          "ch": [
+            {
+              "id": "bb925f2c-8ec7-34f6-add7-8c7004f4b3d8",
+              "nm": "Board 1",
+              "metadata": {
+                "layoutMode": "board"
+              },
+              "lm": 582,
+              "ch": [
+                {
+                  "id": "100dbdec-fa97-a677-6005-4dbad5a63b93",
+                  "nm": "B1 Col 1",
+                  "metadata": {},
+                  "lm": 681,
+                  "ch": [
+                    {
+                      "id": "f6129424-98fe-e7dc-e3ef-4e9425180d12",
+                      "nm": "B1 Col 1 Card 1",
+                      "metadata": {},
+                      "lm": 612
+                    },
+                    {
+                      "id": "2485baeb-7fa9-2aa5-6c5a-103bf38adf1f",
+                      "nm": "B1 Col 1 Card 2",
+                      "metadata": {
+                        "mirror": {}
+                      },
+                      "lm": 628
+                    },
+                    {
+                      "id": "a75b51ad-c2fe-6a13-0ea3-b15edda9372c",
+                      "nm": "B1 Col 1 Card 3 Completed",
+                      "metadata": {
+                        "mirror": {}
+                      },
+                      "cp": 711,
+                      "lm": 711
+                    }
+                  ]
+                },
+                {
+                  "id": "9f509659-b511-e5fd-2f42-b0123e5ff7d6",
+                  "nm": "B1 Col 2",
+                  "metadata": {},
+                  "lm": 685,
+                  "ch": [
+                    {
+                      "id": "36952d68-5321-11da-5652-ce8a513c36e5",
+                      "nm": "B1 Col 2 Card 1",
+                      "metadata": {
+                        "mirror": {}
+                      },
+                      "lm": 642
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "c6e0f16e-1608-4425-232e-8619eab8cfe9",
+              "nm": "Board 2",
+              "metadata": {
+                "layoutMode": "board"
+              },
+              "lm": 665,
+              "ch": [
+                {
+                  "id": "b6bf63b9-5ec3-2f05-4472-595a4e20469e",
+                  "nm": "B2 Col 1",
+                  "metadata": {},
+                  "lm": 671
+                },
+                {
+                  "id": "79e48b6e-cfcf-07c3-568e-7820ea2be78a",
+                  "nm": "B2 Col 2",
+                  "metadata": {},
+                  "lm": 689,
+                  "ch": [
+                    {
+                      "id": "0491c748-63e1-5e2f-e2a4-205ed0be9788",
+                      "nm": "B2 Col 2 Card 1",
+                      "metadata": {},
+                      "lm": 774
+                    }
+                  ]
+                },
+                {
+                  "id": "fd0a789e-ded1-2bff-c20c-8fff59f57815",
+                  "nm": "B2 Col 3",
+                  "metadata": {},
+                  "lm": 693
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "id": "bb5b0c33-a000-2bf2-3dc7-a228757ca7c5",
+          "nm": "Mirrors",
+          "metadata": {},
+          "lm": 388,
+          "ch": [
+            {
+              "id": "7aab0752-cdf5-5b92-4211-cab406ad4283",
+              "nm": "Original",
+              "metadata": {},
+              "lm": 392,
+              "ch": [
+                {
+                  "id": "c54cd71e-5e91-5433-27fa-e9451d13f08b",
+                  "nm": "Testing Mirror",
+                  "metadata": {
+                    "mirror": {
+                      "mirrorRootIds": {
+                        "015e25c7-5f2d-85c4-68ed-3181c49d5df0": true,
+                        "c0ae16f5-9f51-91d7-6a87-9651cb460f03": true
+                      }
+                    },
+                    "virtualRootIds": {
+                      "015e25c7-5f2d-85c4-68ed-3181c49d5df0": true,
+                      "c0ae16f5-9f51-91d7-6a87-9651cb460f03": true
+                    }
+                  },
+                  "lm": 174208,
+                  "ch": [
+                    {
+                      "id": "e05e02dc-d748-85a0-ac53-d70bad82890d",
+                      "nm": "Sub item in mirror",
+                      "metadata": {},
+                      "lm": 459
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id": "e159e378-68e5-a892-f7a6-70bd87aeda03",
+              "nm": "Mirror 1",
+              "metadata": {},
+              "lm": 174185,
+              "ch": [
+                {
+                  "id": "c0ae16f5-9f51-91d7-6a87-9651cb460f03",
+                  "nm": "",
+                  "metadata": {
+                    "mirror": {
+                      "originalId": "c54cd71e-5e91-5433-27fa-e9451d13f08b",
+                      "isMirrorRoot": true
+                    },
+                    "originalId": "c54cd71e-5e91-5433-27fa-e9451d13f08b",
+                    "isVirtualRoot": true
+                  },
+                  "lm": 450
+                }
+              ]
+            },
+            {
+              "id": "c4a82d9c-6e9e-bcc1-d97e-53ec13df04c2",
+              "nm": "Mirror 2",
+              "metadata": {},
+              "lm": 174186,
+              "ch": [
+                {
+                  "id": "015e25c7-5f2d-85c4-68ed-3181c49d5df0",
+                  "nm": "",
+                  "metadata": {
+                    "mirror": {
+                      "originalId": "c54cd71e-5e91-5433-27fa-e9451d13f08b",
+                      "isMirrorRoot": true
+                    },
+                    "originalId": "c54cd71e-5e91-5433-27fa-e9451d13f08b",
+                    "isVirtualRoot": true
+                  },
+                  "lm": 174208
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "initialMostRecentOperationTransactionId": "1146715290",
+      "initialPollingIntervalInMs": 10000,
+      "serverExpandedProjectsList": [
+        "2c2d06f0",
+        "9a2ebabe",
+        "307c8c78",
+        "056b1a03",
+        "09b1be03",
+        "bb5b0c33",
+        "7aab0752",
+        "e159e378",
+        "c54cd71e",
+        "c0ae16f5",
+        "ce9b588a",
+        "bb925f2c",
+        "100dbdec",
+        "c6e0f16e",
+        "79e48b6e"
+      ],
+      "isReadOnly": null,
+      "ownerId": 2999999,
+      "dateJoinedTimestampInSeconds": 1609963954,
+      "itemsCreatedInCurrentMonth": 37,
+      "monthlyItemQuota": 1000000,
+      "rootProjectMetadata": {}
+    },
+    "auxiliaryProjectTreeInfos": []
+  },
+  "user": {
+    "id": 2999999,
+    "email": "nobody@example.test",
+    "firstName": "",
+    "lastName": "",
+    "fullName": "",
+    "emailVerified": true,
+    "hasPassword": false,
+    "itemsCreated": 37,
+    "monthlyItemQuota": -1,
+    "referralLink": "https://workflowy.com/?ref=7d8c0245",
+    "inviteLink": "https://workflowy.com/invite/7d8c0245",
+    "referrerBonus": 100,
+    "refereeBonus": 100,
+    "isPro": true,
+    "isCancelled": false,
+    "hasActiveSubscription": true,
+    "subscriptionEnd": "2021-04-06T20:12:35.102693",
+    "isFreePro": false,
+    "isFreeTrial": true,
+    "isDev": false
+  },
+  "globals": [
+    [
+      "USER_ID",
+      "2999999"
+    ],
+    [
+      "SEND_TIMEZONE_TO_SERVER",
+      false
+    ],
+    [
+      "SHOW_COMPLETED_DEFAULT",
+      true
+    ],
+    [
+      "COHORT",
+      "2021-01-06"
+    ],
+    [
+      "EXPERIMENTS",
+      {
+        "weekly_report": {
+          "group": "control",
+          "code": 73
+        },
+        "upgrade_after_7_free_days_prompt": {
+          "group": "control",
+          "code": 101
+        }
+      }
+    ],
+    [
+      "REFERRAL_LINK",
+      "https://workflowy.com/?ref=110c751d"
+    ],
+    [
+      "LAST_WEEKLY_REPORT",
+      "2011-10-1"
+    ],
+    [
+      "USER_EMAIL_ADDED",
+      true
+    ],
+    [
+      "HAS_STRIPE_CUSTOMER_ID",
+      false
+    ],
+    [
+      "HAS_ACTIVE_SUBSCRIPTION",
+      true
+    ],
+    [
+      "SUBSCRIPTION_CANCELLED",
+      false
+    ],
+    [
+      "SUBSCRIPTION_ENDS_DATE_STRING",
+      "April 6, 2021"
+    ],
+    [
+      "REFERRER_BONUS",
+      100
+    ],
+    [
+      "REFEREE_BONUS",
+      100
+    ],
+    [
+      "USER_IS_WORKFLOWY_DEV",
+      false
+    ],
+    [
+      "WORKFLOWY_ENV",
+      "production"
+    ]
+  ],
+  "settings": {
+    "theme": "default",
+    "font": "system",
+    "show_completed": true,
+    "show_keyboard_shortcuts": false,
+    "unsubscribe_from_summary_emails": false,
+    "backup_to_dropbox": false,
+    "email": "nobody@example.test",
+    "username": "nobody@example.test",
+    "saved_views_json": "[{\"zoomedProject\": {\"projectid\": \"2ddd79b9-e6df-bffc-5d99-b5317a130148\", \"auxiliaryRootProjectId\": \"None\"}, \"searchQuery\": \"\"}, {\"zoomedProject\": {\"projectid\": \"None\", \"auxiliaryRootProjectId\": \"None\"}, \"searchQuery\": \"#today\"}]",
+    "features": {
+      "always_visible_controls": true
+    }
+  },
+  "features": [
+    {
+      "codename": "beta_redirect",
+      "name": "WorkFlowy Labs",
+      "description": "Give us feedback on new WorkFlowy features as they come out! Be the first to know about new features and help our team improve the product."
+    },
+    {
+      "codename": "open_links_in_desktop",
+      "name": "Open links in app",
+      "description": "When opening links in the browser, also open them in the desktop."
+    },
+    {
+      "codename": "dates",
+      "name": "Dates",
+      "description": "Adding dates, Searching for dates, Date ranges"
+    },
+    {
+      "codename": "full_width_page",
+      "name": "Full width page",
+      "description": "Lines wrapping getting you down? Turn this on, and WorkFlowy will spread luxuriously across all the screen space you give it."
+    },
+    {
+      "codename": "board_card_drag",
+      "name": "Better interaction for cards in boards",
+      "description": "Drag the card directly, click it to zoom. You can still just click text to type."
+    },
+    {
+      "codename": "templates",
+      "name": "Templates",
+      "description": "This lets you create and reuse complex structures in a convenient way"
+    },
+    {
+      "codename": "mobile_arrows",
+      "name": "Alternate Mobile Expand/Zoom controls",
+      "description": "A more standard mobile interface. Puts arrows to the left of items, and zoom to the right, where the standard mobile zoom action lives on most mobile apps."
+    }
+  ]
+}
